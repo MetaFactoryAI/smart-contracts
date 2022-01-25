@@ -1,15 +1,37 @@
-type Purpose @entity {
-  id: ID!
-  sender: Sender!
-  purpose: String!
-  createdAt: BigInt!
-  transactionHash: String!
+type All @entity {
+  id: ID! # "all"
+  numWearables: BigInt!
+  numWearableCollections: BigInt!
+  numWearableOwners: BigInt!
+  lastUpdate: BigInt!
 }
 
-type Sender @entity {
-  id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
-  createdAt: BigInt!
-  purposeCount: BigInt!
+type WearableToken @entity {
+  id: ID! # tokenId
+  timestamp: BigInt!
+  supply: BigInt!
+  collection: WearableCollection!
+  owners: [WearableTokenOwned!]! @derivedFrom(field: "token")
+}
+
+type WearableCollection @entity {
+  id: ID! # tokenId
+  tokenURI: String!
+  timestamp: BigInt!
+  supply: BigInt!
+  numTokenTypes: BigInt!
+}
+
+type WearableTokenOwned @entity {
+  id: ID! # owner_tokenId
+  owner: Owner!
+  token: WearableToken!
+  quantity: BigInt!
+}
+
+type Owner @entity {
+  id: ID! # address
+  wearableTokens: [WearableTokenOwned!]! @derivedFrom(field: "owner")
+  numWearables: BigInt!
+  timestamp: BigInt!
 }
