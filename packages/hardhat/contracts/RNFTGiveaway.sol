@@ -4,12 +4,11 @@ pragma solidity ^0.8.0;
 
 import "./claims/ClaimERC1155ERC721ERC20.sol";
 import "./erc1155/AdminControl.sol";
-// import "../../common/BaseWithStorage/WithAdmin.sol";
 
-/// @title MultiGiveaway contract.
-/// @notice This contract manages claims for multiple token types.
+/// @title Giveaway contract for claiming.
+/// @notice This contract manages claims for [multiple] token types.
 
-contract MultiGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
+contract RNFTGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
     ///////////////////////////////  Data //////////////////////////////
 
     bytes4 private constant ERC1155_RECEIVED = 0xf23a6e61;
