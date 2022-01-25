@@ -194,41 +194,44 @@ function App(props) {
   ]);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "TransferSingle", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "RNFT", "TransferSingle", localProvider, 1);
+  // TODO: batch transfer
 
-  let collectiblesCount = useContractReader(readContracts, "YourCollectible", "getCurrentTokenID");
-  const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
-  const [yourCollectibles, setYourCollectibles] = useState();
+  // TODO: wearables count
 
-  useEffect(() => {
-    const updateCollectibles = async () => {
-      const collectiblesUpdate = [];
-    
-      for (let collectibleIndex = 0; collectibleIndex < numberCollectiblesCount; collectibleIndex++) {
-        try {
-          let tokenSupply = await readContracts.YourCollectible.tokenSupply(collectibleIndex);
-          let owned = await readContracts.YourCollectible.balanceOf(address, collectibleIndex);
+  // const collectiblesCount = useContractReader(readContracts, "RNFT", "getCurrentTokenID");
+  // const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
+  const [RNFTs, setRNFTs] = useState();
 
-          let uri = await readContracts.YourCollectible.uri(0); //All tokens have the same base uri
-          uri = uri.replace(/{(.*?)}/, collectibleIndex);
-          const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+  // useEffect(() => {
+  //   const updateCollectibles = async () => {
+  //     const collectiblesUpdate = [];
 
-          try {
-            const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
-            collectiblesUpdate.push({ id: collectibleIndex, supply:tokenSupply, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
-          } catch (e) {
-            console.log(e);
-          }
+  //     for (let collectibleIndex = 0; collectibleIndex < numberCollectiblesCount; collectibleIndex++) {
+  //       try {
+  //         let tokenSupply = await readContracts.RNFT.tokenSupply(collectibleIndex);
+  //         let owned = await readContracts.RNFT.balanceOf(address, collectibleIndex);
 
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourCollectibles(collectiblesUpdate);
-    };
-    updateCollectibles();
-  }, [numberCollectiblesCount, yourLocalBalance]);
+  //         let uri = await readContracts.RNFT.uri(0); // All tokens have the same base uri
+  //         uri = uri.replace(/{(.*?)}/, collectibleIndex);
+  //         const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
+  //         const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+  //         try {
+  //           const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
+  //           collectiblesUpdate.push({ id: collectibleIndex, supply:tokenSupply, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+  //         } catch (e) {
+  //           console.log(e);
+  //         }
+
+  //       } catch (e) {
+  //         console.log(e);
+  //       }
+  //     }
+  //     setRNFTs(collectiblesUpdate);
+  //   };
+  //   updateCollectibles();
+  // }, [numberCollectiblesCount, yourLocalBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -405,7 +408,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourCollectibles
+              Your Wearables
             </Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
@@ -416,36 +419,6 @@ function App(props) {
               to="/transfers"
             >
               Transfers
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsup">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsup");
-              }}
-              to="/ipfsup"
-            >
-              IPFS Upload
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsdown">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsdown");
-              }}
-              to="/ipfsdown"
-            >
-              IPFS Download
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/debugcontracts">
-            <Link
-              onClick={() => {
-                setRoute("/debugcontracts");
-              }}
-              to="/debugcontracts"
-            >
-              Debug Contracts
             </Link>
           </Menu.Item>
         </Menu>
@@ -460,7 +433,7 @@ function App(props) {
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
                 bordered
-                dataSource={yourCollectibles}
+                dataSource={RNFTs}
                 renderItem={item => {
                   const id = item.id;
                   return (
@@ -493,7 +466,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.safeTransferFrom(address, transferToAddresses[id], id, 1, []));
+                            tx(writeContracts.RNFT.safeTransferFrom(address, transferToAddresses[id], id, 1, []));
                           }}
                         >
                           Transfer
@@ -601,7 +574,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="RNFT"
               signer={userSigner}
               provider={localProvider}
               address={address}
