@@ -1,5 +1,9 @@
-# Simple ERC-1155 NFT Example
-Full documentation and tutorial here: https://docs.scaffoldeth.io/scaffold-eth/examples-and-tutorials/simple-erc-1155-nft
+# Wearable NFT claims
+Work in progress wearable and claiming development.
+It leverages:
+- Scaffold-eth
+- The Sandbox Game's MultiGiveaway contract
+- Manifold's base NFT structure, as amended by LucaLush.eth
 
 # Welcome to Scaffold-eth
 Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
