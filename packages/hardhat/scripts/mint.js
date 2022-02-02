@@ -7,9 +7,9 @@ const delayMS = 1000;
 
 const main = async () => {
   const { deployer } = await getNamedAccounts();
-  const toAddress = deployer;
+  const toAddress = "0x34447Da006A91d855c702A6759e2FCEA35b31Da2"; // from Metamask
 
-  console.log("\n\n 🎫 Minting to " + deployer + "...\n");
+  console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
   const rnft = await ethers.getContract("RNFT", deployer);
 
   // ERC1155
@@ -17,13 +17,19 @@ const main = async () => {
     rnft.mintBaseNew(toArray, amountArray, uriArray);
 
   const mintBaseExistingErc1155 = async (toArray, tokenIdArray, amountArray) =>
-    rnft.mintBaseNew(toArray, tokenIdArray, amountArray);
+    rnft.mintBaseExisting(toArray, tokenIdArray, amountArray);
 
   // generate NFTs and give to toAddress
+
 
   await mintBaseNewErc1155([toAddress], [BigNumber.from("5")], [""], {
     gasLimit: 400000,
   });
+  // await mintBaseExistingErc1155([toAddress], [BigNumber.from("20")], [BigNumber.from("5")], [""], {
+  //   gasLimit: 400000,
+  // });
+  const balance = await rnft.balanceOf(toAddress, BigNumber.from("1")) // TODO: why 0 balance
+  console.log('balance', balance.toNumber())
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));

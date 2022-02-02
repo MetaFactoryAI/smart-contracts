@@ -27,6 +27,8 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 
 const { ethers } = require("ethers");
 
+const { BigNumber } = ethers;
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -203,35 +205,38 @@ function App(props) {
   // const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
   const [RNFTs, setRNFTs] = useState();
 
-  // useEffect(() => {
-  //   const updateCollectibles = async () => {
-  //     const collectiblesUpdate = [];
+  useEffect(() => {
+    const getOwned = async (givenAddress, id) => readContracts.RNFT.balanceOf(givenAddress, BigNumber.from(id));
 
-  //     for (let collectibleIndex = 0; collectibleIndex < numberCollectiblesCount; collectibleIndex++) {
-  //       try {
-  //         let tokenSupply = await readContracts.RNFT.tokenSupply(collectibleIndex);
-  //         let owned = await readContracts.RNFT.balanceOf(address, collectibleIndex);
+    const updateCollectibles = async () => {
+      const collectiblesUpdate = [];
 
-  //         let uri = await readContracts.RNFT.uri(0); // All tokens have the same base uri
-  //         uri = uri.replace(/{(.*?)}/, collectibleIndex);
-  //         const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
-  //         const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+      for (let collectibleIndex = 0; collectibleIndex < 1; collectibleIndex++) {
+        try {
+          // let tokenSupply = await readContracts.RNFT.tokenSupply(collectibleIndex);
+          const owned = await getOwned(address, collectibleIndex)
+          console.log('owned', owned.toNumber())
 
-  //         try {
-  //           const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
-  //           collectiblesUpdate.push({ id: collectibleIndex, supply:tokenSupply, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
-  //         } catch (e) {
-  //           console.log(e);
-  //         }
+          let uri = await readContracts.RNFT.uri("0"); // All tokens have the same base uri
+          uri = uri.replace(/{(.*?)}/, collectibleIndex);
+          const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     }
-  //     setRNFTs(collectiblesUpdate);
-  //   };
-  //   updateCollectibles();
-  // }, [numberCollectiblesCount, yourLocalBalance]);
+          // try {
+          //   const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
+          //   collectiblesUpdate.push({ id: collectibleIndex, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+          // } catch (e) {
+          //   console.log(e);
+          // }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setRNFTs(collectiblesUpdate);
+    };
+    updateCollectibles();
+  }, [address, yourLocalBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
