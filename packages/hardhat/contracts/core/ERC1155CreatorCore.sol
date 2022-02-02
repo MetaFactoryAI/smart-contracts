@@ -6,9 +6,9 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import "./IERC1155CreatorExtensionApproveTransfer.sol";
-import "./IERC1155CreatorExtensionBurnable.sol";
-import "./IERC1155CreatorMintPermissions.sol";
+import "../extensions/erc1155/IERC1155CreatorExtensionApproveTransfer.sol";
+import "../extensions/erc1155/IERC1155CreatorExtensionBurnable.sol";
+import "../permissions/erc1155/IERC1155CreatorMintPermissions.sol";
 import "./IERC1155CreatorCore.sol";
 import "./CreatorCore.sol";
 

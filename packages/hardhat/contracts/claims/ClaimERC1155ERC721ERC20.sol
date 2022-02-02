@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "../interfaces/IERC721Extended.sol"; 
+import "../erc721/IERC721Extended.sol"; 
 import "../libraries/Verify.sol";
 
 contract ClaimERC1155ERC721ERC20 {

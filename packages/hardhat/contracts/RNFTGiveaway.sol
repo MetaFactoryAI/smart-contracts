@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "./claims/ClaimERC1155ERC721ERC20.sol";
-import "./erc1155/AdminControl.sol";
+import "./access/AdminControl.sol";
 
 /// @title Giveaway contract for claiming.
 /// @notice This contract manages claims for [multiple] token types.

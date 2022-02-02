@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 /// @author: manifold.xyz
 /// modified from original coding by LucaLush.eth 
 
-import "./erc1155/ERC1155Creator.sol";
+import "./core/ERC1155Creator.sol";
 
 contract RNFT is ERC1155Creator {
     constructor() ERC1155Creator() {}
