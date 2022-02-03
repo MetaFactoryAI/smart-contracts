@@ -28,7 +28,7 @@ const main = async () => {
   // await mintBaseExistingErc1155([toAddress], [BigNumber.from("20")], [BigNumber.from("5")], [""], {
   //   gasLimit: 400000,
   // });
-  const balance = await rnft.balanceOf(toAddress, BigNumber.from("1")) // TODO: why 0 balance
+  const balance = await rnft.balanceOf(toAddress, BigNumber.from("1"))
   console.log('balance', balance.toNumber())
 
   function sleep(ms) {

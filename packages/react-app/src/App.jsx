@@ -204,30 +204,32 @@ function App(props) {
   // const collectiblesCount = useContractReader(readContracts, "RNFT", "getCurrentTokenID");
   // const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
   const [RNFTs, setRNFTs] = useState();
-
+  let owned = 0
+  
   useEffect(() => {
+
     const getOwned = async (givenAddress, id) => readContracts.RNFT.balanceOf(givenAddress, BigNumber.from(id));
 
     const updateCollectibles = async () => {
       const collectiblesUpdate = [];
 
-      for (let collectibleIndex = 0; collectibleIndex < 1; collectibleIndex++) {
+      for (let collectibleIndex = 1; collectibleIndex < 2; collectibleIndex++) { // TODO: review index used
         try {
           // let tokenSupply = await readContracts.RNFT.tokenSupply(collectibleIndex);
-          const owned = await getOwned(address, collectibleIndex)
-          console.log('owned', owned.toNumber())
+          owned = await getOwned(address, collectibleIndex)
+          console.log(`Balance of ${collectibleIndex}`, owned) // Balance is working!
 
-          let uri = await readContracts.RNFT.uri("0"); // All tokens have the same base uri
+          let uri = "https://ipfs.io/ipfs/QmchqTJj8MH4Qir5Hf4EzbFvQWxiDNmYDoiRMhPzt2BNrP/{id}.json"; // grabbed from deploy console
           uri = uri.replace(/{(.*?)}/, collectibleIndex);
           const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
-          // try {
-          //   const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
-          //   collectiblesUpdate.push({ id: collectibleIndex, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
-          // } catch (e) {
-          //   console.log(e);
-          // }
+          try {
+            const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
+            collectiblesUpdate.push({ id: collectibleIndex, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+          } catch (e) {
+            console.log(e);
+          }
 
         } catch (e) {
           console.log(e);
@@ -441,44 +443,46 @@ function App(props) {
                 dataSource={RNFTs}
                 renderItem={item => {
                   const id = item.id;
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
-                          </div>
-                        }
-                      >
-                        <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
-                        </div>
-                        <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        owned: {item.owned.toNumber()} of {item.supply.toNumber()}
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.RNFT.safeTransferFrom(address, transferToAddresses[id], id, 1, []));
-                          }}
+                  if (item !== undefined) {
+                    return (
+                      <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                        <Card
+                          title={
+                            <div>
+                              <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                            </div>
+                          }
                         >
-                          Transfer
-                        </Button>
-                      </div>
-                    </List.Item>
-                  );
+                          <div>
+                            <img src={item.image} style={{ maxWidth: 150 }} />
+                          </div>
+                          <div>{item.description}</div>
+                        </Card>
+
+                        <div>
+                          owned: {item.owned ? item.owned.toNumber() : 0} of {item.supply ? item.supply.toNumber() : 0}
+                          <AddressInput
+                            ensProvider={mainnetProvider}
+                            placeholder="transfer to address"
+                            value={transferToAddresses[id]}
+                            onChange={newValue => {
+                              const update = {};
+                              update[id] = newValue;
+                              setTransferToAddresses({ ...transferToAddresses, ...update });
+                            }}
+                          />
+                          <Button
+                            onClick={() => {
+                              console.log("writeContracts", writeContracts);
+                              tx(writeContracts.RNFT.safeTransferFrom(address, transferToAddresses[id], id, 1, []));
+                            }}
+                          >
+                            Transfer
+                          </Button>
+                        </div>
+                      </List.Item>
+                    );
+                          }
                 }}
               />
             </div>
