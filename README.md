@@ -5,6 +5,17 @@ It leverages:
 - The Sandbox Game's MultiGiveaway contract
 - Manifold's base NFT structure, as amended by LucaLush.eth
 
+Local dev full-stack quickstart:
+```yarn chain```
+```yarn start```
+```yarn deploy```
+```yarn run-graph-node```
+```yarn graph-codegen```
+```yarn graph-build```
+```yarn graph-create-local```
+```yarn graph-deploy-local```
+```yarn mint```
+
 # Welcome to Scaffold-eth
 Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
 
