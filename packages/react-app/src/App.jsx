@@ -339,7 +339,7 @@ function App(props) {
     }
   } else {
     networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
+      <div style={{ zIndex: -1, position: "absolute", right: 0, top: 28, padding: 16, color: targetNetwork.color }}>
         {targetNetwork.name}
       </div>
     );
@@ -376,36 +376,6 @@ function App(props) {
   useEffect(() => {
     setRoute(window.location.pathname);
   }, [setRoute]);
-
-  let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
-
-  const [faucetClicked, setFaucetClicked] = useState(false);
-  if (
-    !faucetClicked &&
-    localProvider &&
-    localProvider._network &&
-    localProvider._network.chainId == 31337 &&
-    yourLocalBalance &&
-    ethers.utils.formatEther(yourLocalBalance) <= 0
-  ) {
-    faucetHint = (
-      <div style={{ padding: 16 }}>
-        <Button
-          type="primary"
-          onClick={() => {
-            faucetTx({
-              to: address,
-              value: ethers.utils.parseEther("0.01"),
-            });
-            setFaucetClicked(true);
-          }}
-        >
-          💰 Grab funds from the faucet ⛽️
-        </Button>
-      </div>
-    );
-  }
 
   const [yourJSON, setYourJSON] = useState(STARTING_JSON);
   const [sending, setSending] = useState();
@@ -465,38 +435,19 @@ function App(props) {
                         <Card
                           title={
                             <div>
-                              <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                              <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span>
+                              {item.name}
                             </div>
                           }
                         >
+                          <div>Owned: {item.owned ? item.owned.toNumber() : 0}</div>
                           <div>
-                            <img src={item.image} style={{ maxWidth: 150 }} alt="item" />
+                            <img src={item.image} style={{ maxWidth: "100%" }} alt="item" />
                           </div>
+                          <div style={{ height: "20px" }}> </div>
                           <Animation animationUrl={item.animation} />
                           <div>{item.description}</div>
                         </Card>
-
-                        <div>
-                          owned: {item.owned ? item.owned.toNumber() : 0} of {item.supply ? item.supply.toNumber() : 0}
-                          <AddressInput
-                            ensProvider={mainnetProvider}
-                            placeholder="transfer to address"
-                            value={transferToAddresses[id]}
-                            onChange={newValue => {
-                              const update = {};
-                              update[id] = newValue;
-                              setTransferToAddresses({ ...transferToAddresses, ...update });
-                            }}
-                          />
-                          <Button
-                            onClick={() => {
-                              console.log("writeContracts", writeContracts);
-                              tx(writeContracts.RNFT.safeTransferFrom(address, transferToAddresses[id], id, 1, []));
-                            }}
-                          >
-                            Transfer
-                          </Button>
-                        </div>
                       </List.Item>
                     );
                   }
@@ -513,10 +464,10 @@ function App(props) {
                 renderItem={item => {
                   return (
                     <List.Item key={item[1] + "_" + item[2] + "_" + item.blockNumber + "_" + item[3].toNumber()}>
-                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item[3].toNumber()}</span>
-                      <Address address={item[1]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
-                      <Address address={item[2]} ensProvider={mainnetProvider} fontSize={16} />
-                      <span style={{ fontSize: 16, marginRight: 8 }}>Amount: {item[4].toNumber()}</span>
+                      <span style={{ fontSize: 14, marginRight: 8 }}>#{item[3].toNumber()}</span>
+                      <Address address={item[1]} ensProvider={mainnetProvider} fontSize={14} /> =&gt;
+                      <Address address={item[2]} ensProvider={mainnetProvider} fontSize={14} />
+                      <span style={{ fontSize: 14, marginRight: 8 }}>Amount: {item[4].toNumber()}</span>
                     </List.Item>
                   );
                 }}
@@ -625,47 +576,6 @@ function App(props) {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
         />
-        {faucetHint}
-      </div>
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
       </div>
     </div>
   );
