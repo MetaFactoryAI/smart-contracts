@@ -7,7 +7,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import {INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -57,20 +57,11 @@ const NETWORKCHECK = false;
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
-  description: "It's actually a bison?",
-  external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  name: "Buffalo",
-  attributes: [
-    {
-      trait_type: "BackgroundColor",
-      value: "green",
-    },
-    {
-      trait_type: "Eyes",
-      value: "googly",
-    },
-  ],
+  description: "",
+  external_url: "",
+  image: "",
+  name: "",
+  attributes: [],
 };
 
 // helper function to "Get" from IPFS
@@ -95,8 +86,12 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
-const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
+const scaffoldEthProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  : null;
+const mainnetInfura = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -204,33 +199,39 @@ function App(props) {
   // const collectiblesCount = useContractReader(readContracts, "RNFT", "getCurrentTokenID");
   // const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
   const [RNFTs, setRNFTs] = useState();
-  let owned = 0
-  
-  useEffect(() => {
+  let owned = 0;
 
+  useEffect(() => {
     const getOwned = async (givenAddress, id) => readContracts.RNFT.balanceOf(givenAddress, BigNumber.from(id));
 
     const updateCollectibles = async () => {
       const collectiblesUpdate = [];
 
-      for (let collectibleIndex = 1; collectibleIndex < 2; collectibleIndex++) { // TODO: review index used
+      for (let collectibleIndex = 1; collectibleIndex < 2; collectibleIndex++) {
+        // TODO: review index used
         try {
           // let tokenSupply = await readContracts.RNFT.tokenSupply(collectibleIndex);
-          owned = await getOwned(address, collectibleIndex)
-          console.log(`Balance of ${collectibleIndex}`, owned) // Balance is working!
+          owned = await getOwned(address, collectibleIndex);
+          console.log(`Balance of ${collectibleIndex}`, owned); // Balance is working!
 
-          let uri = "https://ipfs.io/ipfs/QmchqTJj8MH4Qir5Hf4EzbFvQWxiDNmYDoiRMhPzt2BNrP/{id}.json"; // grabbed from deploy console
+          // TODO: grab IPFS CID from console (hardhat deploy script)
+          let uri = "https://ipfs.io/ipfs/QmZpFWKpg4fhDCv6k5j4WrWuiEdLQqjjouHkstrct5mVp3/{id}.json"; // grabbed from deploy console
           uri = uri.replace(/{(.*?)}/, collectibleIndex);
           const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
           try {
-            const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
-            collectiblesUpdate.push({ id: collectibleIndex, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            collectiblesUpdate.push({
+              id: collectibleIndex,
+              owned: owned,
+              name: jsonManifest.name,
+              description: jsonManifest.description,
+              image: jsonManifest.image,
+            });
           } catch (e) {
             console.log(e);
           }
-
         } catch (e) {
           console.log(e);
         }
@@ -482,7 +483,7 @@ function App(props) {
                         </div>
                       </List.Item>
                     );
-                          }
+                  }
                 }}
               />
             </div>

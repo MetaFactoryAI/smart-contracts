@@ -9,7 +9,7 @@ Local dev full-stack quickstart:
 ```yarn chain```
 ```yarn start```
 ```yarn deploy```
-```yarn run-graph-node```
+```yarn remove-graph-node``` ```yarn run-graph-node```
 ```yarn graph-codegen```
 ```yarn graph-build```
 ```yarn graph-create-local```

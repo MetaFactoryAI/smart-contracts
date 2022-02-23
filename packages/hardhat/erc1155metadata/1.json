@@ -1,1 +1,36 @@
-{"description": "It's actually a bison?","external_url": "https://austingriffith.com/portfolio/paintings/","image": "https://austingriffith.com/images/paintings/buffalo.jpg","name": "Buffalo"}
+{
+    "name": "Vaunker Hoodie",
+    "description": "some description here",
+    "decimals": 0,
+    "image": "https://ipfs.io/ipfs/QmU8LwAwk9K71qZnS9Z4rs1YYbwRndehRxckgewLZCo14F/yfi_hoodie/yfi_hoodie.png",
+    "external_url": "https://mf.app/",
+    "animation_url": "https://ipfs.io/ipfs/QmU8LwAwk9K71qZnS9Z4rs1YYbwRndehRxckgewLZCo14F/yfi_hoodie/hoodie_tpose.glb",
+    "properties": {
+        "brand": "Vaunker",
+        "rarity": "Legendary",
+        "season": "2",
+        "style": "Hoodie",
+        "material": "100% Cotton",
+        "manufactured_in": "United States",
+        "designers": ["Van", "Weseeclearly"],
+        "models": [
+            {
+                "mimeType": "model/gltf-binary",
+                "uri": "",
+                "properties": {
+                    "description": "a GLTF file for Webaverse, NeosVR, etc"
+                }
+            },
+            {
+                "mimeType": "model/vnd.usd+zip",
+                "description": "a USD file for AR",
+                "uri": ""
+            },
+            {
+                "mimeType": "model/vox",
+                "description": "a USD file for AR",
+                "uri": ""
+            }
+        ]
+    }
+}

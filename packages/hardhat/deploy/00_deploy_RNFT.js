@@ -22,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const rNFT = await ethers.getContract("RNFT", deployer);
 
   // Configure BaseTokenURI
-  await rNFT.setBaseTokenURI(""); // TODO: decide on naming
+  await rNFT.setBaseTokenURI("");
 };
 module.exports.tags = ["RNFT"];
 
