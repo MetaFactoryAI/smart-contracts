@@ -9,6 +9,7 @@ describe("RNFT contract", function () {
 
     const rNFT = await RNFT.deploy();
 
-    // ..... // TODO:
+    // TODO:
+    // Add some metadata tests relating to: image, animation_url, properties
   });
 });

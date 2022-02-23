@@ -6,7 +6,18 @@ import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import {
+  Account,
+  Address,
+  AddressInput,
+  Animation,
+  Contract,
+  Faucet,
+  GasGauge,
+  Header,
+  Ramp,
+  ThemeSwitch,
+} from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -23,6 +34,7 @@ import {
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
+
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 const { ethers } = require("ethers");
@@ -59,9 +71,10 @@ const NETWORKCHECK = false;
 const STARTING_JSON = {
   description: "",
   external_url: "",
+  animation_url: "",
   image: "",
   name: "",
-  attributes: [],
+  properties: [],
 };
 
 // helper function to "Get" from IPFS
@@ -222,12 +235,14 @@ function App(props) {
 
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            console.log("json", jsonManifest);
             collectiblesUpdate.push({
               id: collectibleIndex,
-              owned: owned,
+              owned,
               name: jsonManifest.name,
               description: jsonManifest.description,
               image: jsonManifest.image,
+              animation: jsonManifest.animation_url,
             });
           } catch (e) {
             console.log(e);
@@ -455,8 +470,9 @@ function App(props) {
                           }
                         >
                           <div>
-                            <img src={item.image} style={{ maxWidth: 150 }} />
+                            <img src={item.image} style={{ maxWidth: 150 }} alt="item" />
                           </div>
+                          <Animation animationUrl={item.animation} />
                           <div>{item.description}</div>
                         </Card>
 
