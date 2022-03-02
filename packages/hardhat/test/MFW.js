@@ -1,13 +1,13 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 
-describe("RNFT contract", function () {
+describe("MFW contract", function () {
   it("Initial deploy", async function () {
     const [deployer] = await ethers.getSigners();
 
-    const RNFT = await ethers.getContractFactory("RNFT");
+    const MFW = await ethers.getContractFactory("MFW");
 
-    const rNFT = await RNFT.deploy();
+    const mfw = await MFW.deploy();
 
     // TODO:
     // Add some metadata tests relating to: image, animation_url, properties

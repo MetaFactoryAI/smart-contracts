@@ -9,11 +9,11 @@ const main = async () => {
   const toAddress = "0x34447Da006A91d855c702A6759e2FCEA35b31Da2";
 
   console.log("\n\n 🎫 Minting to base existing" + toAddress + "...\n");
-  const rnft = await ethers.getContract("RNFT", deployer);
+  const mfw = await ethers.getContract("MFW", deployer);
 
   // ERC1155
   const mintBaseExistingErc1155 = async (toArray, tokenIdArray, amountArray) =>
-    rnft.mintBaseExisting(toArray, tokenIdArray, amountArray);
+    mfw.mintBaseExisting(toArray, tokenIdArray, amountArray);
 
   // generate dummy NFTs for an existing ID and base and give to toAddress
   await mintBaseExistingErc1155(
@@ -25,7 +25,7 @@ const main = async () => {
       gasLimit: 400000,
     }
   );
-  const balance = await rnft.balanceOf(toAddress, BigNumber.from("1"));
+  const balance = await mfw.balanceOf(toAddress, BigNumber.from("1"));
   console.log("balance", balance.toNumber());
 
   function sleep(ms) {

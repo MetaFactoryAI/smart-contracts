@@ -1,5 +1,5 @@
 import { store, Address, Bytes, BigInt } from "@graphprotocol/graph-ts";
-import { TransferSingle, TransferBatch, WearableToken as WearableTokenContract } from "../generated/RNFT/WearableToken"; // TODO: contract import
+import { TransferSingle, TransferBatch, WearableToken as WearableTokenContract } from "../generated/MFW/WearableToken"; // TODO: contract import
 import { WearableToken, WearableCollection, Owner, All } from "../generated/schema";
 
 import { log } from "@graphprotocol/graph-ts";

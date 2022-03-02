@@ -1,14 +1,14 @@
 {
-  "name": "@rnft/subgraph",
+  "name": "@mfw/subgraph",
   "license": "UNLICENSED",
   "version": "1.0.0",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ atkinsonholly/RNFT",
-    "create-local": "graph create --node http://localhost:8020/ RNFT",
-    "remove-local": "graph remove --node http://localhost:8020/ RNFT",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RNFT"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ atkinsonholly/MFW",
+    "create-local": "graph create --node http://localhost:8020/ MFW",
+    "remove-local": "graph remove --node http://localhost:8020/ MFW",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 MFW"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.18.0",

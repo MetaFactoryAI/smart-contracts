@@ -13,18 +13,18 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   console.log(file.cid.toString());
   const tokenUri = "https://ipfs.io/ipfs/"+file.cid.toString()+"/{id}.json"
 
-  await deploy("RNFT", {
+  await deploy("MFW", {
     from: deployer,
     args: [],
     log: true,
   });
 
-  const rNFT = await ethers.getContract("RNFT", deployer);
+  const mfw = await ethers.getContract("MFW", deployer);
 
   // Configure BaseTokenURI
-  await rNFT.setBaseTokenURI("");
+  await mfw.setBaseTokenURI("");
 };
-module.exports.tags = ["RNFT"];
+module.exports.tags = ["MFW"];
 
 /*
 Tenderly verification

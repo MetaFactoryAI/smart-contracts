@@ -8,7 +8,7 @@ import "./access/AdminControl.sol";
 /// @title Giveaway contract for claiming.
 /// @notice This contract manages claims for [multiple] token types.
 
-contract RNFTGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
+contract MFWGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
     ///////////////////////////////  Data //////////////////////////////
 
     bytes4 private constant ERC1155_RECEIVED = 0xf23a6e61;

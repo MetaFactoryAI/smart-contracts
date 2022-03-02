@@ -204,18 +204,18 @@ function App(props) {
   ]);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "RNFT", "TransferSingle", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "MFW", "TransferSingle", localProvider, 1);
   // TODO: batch transfer
 
   // TODO: wearables count
 
-  // const collectiblesCount = useContractReader(readContracts, "RNFT", "getCurrentTokenID");
+  // const collectiblesCount = useContractReader(readContracts, "MFW", "getCurrentTokenID");
   // const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
-  const [RNFTs, setRNFTs] = useState();
+  const [MFWs, setMFWs] = useState();
   let owned = 0;
 
   useEffect(() => {
-    const getOwned = async (givenAddress, id) => readContracts.RNFT.balanceOf(givenAddress, BigNumber.from(id));
+    const getOwned = async (givenAddress, id) => readContracts.MFW.balanceOf(givenAddress, BigNumber.from(id));
 
     const updateCollectibles = async () => {
       const collectiblesUpdate = [];
@@ -223,7 +223,7 @@ function App(props) {
       for (let collectibleIndex = 1; collectibleIndex < 2; collectibleIndex++) {
         // TODO: review index used
         try {
-          // let tokenSupply = await readContracts.RNFT.tokenSupply(collectibleIndex);
+          // let tokenSupply = await readContracts.MFW.tokenSupply(collectibleIndex);
           owned = await getOwned(address, collectibleIndex);
           console.log(`Balance of ${collectibleIndex}`, owned); // Balance is working!
 
@@ -251,7 +251,7 @@ function App(props) {
           console.log(e);
         }
       }
-      setRNFTs(collectiblesUpdate);
+      setMFWs(collectiblesUpdate);
     };
     updateCollectibles();
   }, [address, yourLocalBalance]);
@@ -426,7 +426,7 @@ function App(props) {
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
                 bordered
-                dataSource={RNFTs}
+                dataSource={MFWs}
                 renderItem={item => {
                   const id = item.id;
                   if (item !== undefined) {
@@ -551,7 +551,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="RNFT"
+              name="MFW"
               signer={userSigner}
               provider={localProvider}
               address={address}

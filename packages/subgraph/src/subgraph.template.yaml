@@ -3,10 +3,10 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: RNFT
+    name: MFW
     network: localhost
     source:
-      address: "{{localhost_RNFTAddress}}"
+      address: "{{localhost_MFWAddress}}"
       abi: WearableToken
       startBlock: 1
     mapping:
@@ -14,10 +14,10 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - RNFT
+        - MFW
       abis:
         - name: WearableToken
-          file: ./abis/localhost_RNFT.json
+          file: ./abis/localhost_MFW.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
