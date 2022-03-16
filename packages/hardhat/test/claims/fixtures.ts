@@ -54,7 +54,7 @@ import {
         deployer
       );
 
-      await giveawayContract.approveAdmin(mfwGiveawayAdmin); // TODO: check if needed
+      await giveawayContract.approveAdmin(mfwGiveawayAdmin);
   
       const giveawayContractAsAdmin = await ethers.getContract(
         'TestMFWGiveaway',
@@ -62,7 +62,9 @@ import {
       );
 
       // Wearable contract
-      const mfwContract = await ethers.getContract('MFW');
+      const mfwContract = await ethers.getContract('MFW', deployer);
+
+      await mfwContract.approveAdmin(mfwAdmin);
 
       const mfwContractAsAdmin = await mfwContract.connect(
         ethers.provider.getSigner(mfwAdmin)
@@ -151,33 +153,6 @@ import {
           await mintTestWearables(7, 21); // ids 7 to 20
         }
       }
-  
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // async function mintSingleAssetWithId(claim: any) {
-      //   const newAsset = {
-      //     ids: [],
-      //     values: [],
-      //     contractAddress: '',
-      //   };
-      //   return {
-      //     ...claim,
-      //     erc1155: await Promise.all(
-      //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      //       claim.erc1155.map(async (asset: any, assetIndex: number) => {
-      //         newAsset.ids = await Promise.all(
-      //           asset.ids.map(
-      //             async (assetPackId: number, index: number) =>
-      //               await mintTestAssets(assetPackId, asset.values[index])
-      //           )
-      //         );
-      //         (newAsset.values = claim.erc1155[assetIndex].values),
-      //           (newAsset.contractAddress =
-      //             claim.erc1155[assetIndex].contractAddress);
-      //         return newAsset;
-      //       })
-      //     ),
-      //   };
-      // }
   
       if (mintSingleAsset) {
         // Create data for a single wearable

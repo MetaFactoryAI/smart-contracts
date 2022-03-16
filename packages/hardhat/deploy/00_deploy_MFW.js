@@ -4,8 +4,8 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
-  const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deploy, execute } = deployments;
+  const { deployer, mfwAdmin } = await getNamedAccounts();
 
   // TODO: metadata URI updates for Ceramic
 
@@ -19,10 +19,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
-  const mfw = await ethers.getContract("MFW", deployer);
+  await execute(
+    'MFW',
+    {from: deployer, log: true},
+    'approveAdmin',
+    mfwAdmin,
+  );
 
-  // Configure BaseTokenURI
-  await mfw.setBaseTokenURI(""); // TODO: baseTokenURI
+  // TODO: baseTokenURI
 };
 module.exports.tags = ["MFW"];
 
