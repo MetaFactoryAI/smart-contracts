@@ -46,13 +46,15 @@ import {
       await deployments.deploy('TestMFWGiveaway', {
         from: deployer,
         contract: 'MFWGiveaway',
-        args: [mfwGiveawayAdmin],
+        args: [],
       });
   
       const giveawayContract = await ethers.getContract(
         'TestMFWGiveaway',
         deployer
       );
+
+      await giveawayContract.approveAdmin(mfwGiveawayAdmin); // TODO: check if needed
   
       const giveawayContractAsAdmin = await ethers.getContract(
         'TestMFWGiveaway',
@@ -60,29 +62,35 @@ import {
       );
 
       // Wearable contract
-
       const mfwContract = await ethers.getContract('MFW');
 
       const mfwContractAsAdmin = await mfwContract.connect(
         ethers.provider.getSigner(mfwAdmin)
       );
 
-      const mintBaseNewErc1155 = async (toArray, amountArray, uriArray) =>
+      // TODO: mintBaseExisting tests
+      const mintBaseExistingErc1155 = async (toArray: string[], id: number, amountArray: BigNumber[], uriArray: string[]) =>
+      mfwContractAsAdmin.mintBaseNew(toArray, id, amountArray, uriArray);
+
+      const mintBaseNewErc1155 = async (toArray: string[], amountArray: BigNumber[], uriArray: string[]) =>
       mfwContractAsAdmin.mintBaseNew(toArray, amountArray, uriArray);
   
-      // Supply MFW to contract for testing // TODO: mintBaseNew
-      async function mintTestWearables() {
+      // Supply MFW to contract for testing 
+      async function mintTestWearables(startId: number, endId: number ) {
         
         const owner = giveawayContract.address;
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = startId; i < endId; i++) {
             await mintBaseNewErc1155(
               [owner], // To
-              [BigNumber.from("5")], // Desired supply
+              [BigNumber.from("5")], // Test supply will mint supply 5 for each id
               [""], // The "base"
             );
         }
       }
+
+      // TODO: mintBaseExisting
+      // TODO: update base
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       function assignReservedAddressToClaim(dataSet: any) {
@@ -104,96 +112,78 @@ import {
               return asset;
             });
           }
-          if (claim.erc721) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            claim.erc721.map(async (land: any) => {
-              land.contractAddress = landContract.address;
-              return land;
-            });
-          }
-          if (claim.erc20) {
-            if (claim.erc20.amounts.length === 1)
-              claim.erc20.contractAddresses = [sandContract.address];
-            if (claim.erc20.amounts.length === 3)
-              claim.erc20.contractAddresses = [
-                sandContract.address,
-                speedGemContract.address,
-                rareCatalystContract.address,
-              ];
-          }
           return claim;
         });
       }
   
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function setAssets(dataSet: any, amount: number) {
-        dataSet[0].erc1155[0].ids = [];
-        dataSet[0].erc1155[0].values = [];
-        for (let i = 0; i < amount; i++) {
-          // a big id to avoid collision with other setups
-          dataSet[0].erc1155[0].ids.push(i + 1000);
-          dataSet[0].erc1155[0].values.push(5);
-        }
-      }
+      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // function setAssets(dataSet: any, amount: number) {
+      //   dataSet[0].erc1155[0].ids = [];
+      //   dataSet[0].erc1155[0].values = [];
+      //   for (let i = 0; i < amount; i++) {
+      //     // a big id to avoid collision with other setups
+      //     dataSet[0].erc1155[0].ids.push(i + 1000);
+      //     dataSet[0].erc1155[0].values.push(5);
+      //   }
+      // }
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let dataWithIds0: any = JSON.parse(JSON.stringify(testData0));
+      let dataSet_0: any = JSON.parse(JSON.stringify(testData0));
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let dataWithIds1: any = JSON.parse(JSON.stringify(testData1));
+      let dataSet_1: any = JSON.parse(JSON.stringify(testData1));
   
       // To ensure the same address for others[0] for all tests
-      assignReservedAddressToClaim(dataWithIds0);
-      assignReservedAddressToClaim(dataWithIds1);
+      assignReservedAddressToClaim(dataSet_0);
+      assignReservedAddressToClaim(dataSet_1);
   
       // To ensure the claim data works for all developers
-      assignTestContractAddressesToClaim(dataWithIds0);
-      assignTestContractAddressesToClaim(dataWithIds1);
+      assignTestContractAddressesToClaim(dataSet_0);
+      assignTestContractAddressesToClaim(dataSet_1);
   
-      if (numberOfAssets) {
-        setAssets(dataWithIds0, numberOfAssets);
-      }
+      // if (numberOfAssets) {
+      //   setAssets(dataWithIds0, numberOfAssets);
+      // }
   
       if (mint) {
-        const claimsWithAssetIds0 = await mintNewAssetIds(dataWithIds0);
-        dataWithIds0 = claimsWithAssetIds0;
+        await mintTestWearables(1, 7); // ids 1 to 6
         if (multi) {
-          const claimsWithAssetIds1 = await mintNewAssetIds(dataWithIds1);
-          dataWithIds1 = claimsWithAssetIds1;
+          await mintTestWearables(7, 21); // ids 7 to 20
         }
-  
-        await mintTestLands();
       }
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async function mintSingleAssetWithId(claim: any) {
-        const newAsset = {
-          ids: [],
-          values: [],
-          contractAddress: '',
-        };
-        return {
-          ...claim,
-          erc1155: await Promise.all(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            claim.erc1155.map(async (asset: any, assetIndex: number) => {
-              newAsset.ids = await Promise.all(
-                asset.ids.map(
-                  async (assetPackId: number, index: number) =>
-                    await mintTestAssets(assetPackId, asset.values[index])
-                )
-              );
-              (newAsset.values = claim.erc1155[assetIndex].values),
-                (newAsset.contractAddress =
-                  claim.erc1155[assetIndex].contractAddress);
-              return newAsset;
-            })
-          ),
-        };
-      }
+      // async function mintSingleAssetWithId(claim: any) {
+      //   const newAsset = {
+      //     ids: [],
+      //     values: [],
+      //     contractAddress: '',
+      //   };
+      //   return {
+      //     ...claim,
+      //     erc1155: await Promise.all(
+      //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //       claim.erc1155.map(async (asset: any, assetIndex: number) => {
+      //         newAsset.ids = await Promise.all(
+      //           asset.ids.map(
+      //             async (assetPackId: number, index: number) =>
+      //               await mintTestAssets(assetPackId, asset.values[index])
+      //           )
+      //         );
+      //         (newAsset.values = claim.erc1155[assetIndex].values),
+      //           (newAsset.contractAddress =
+      //             claim.erc1155[assetIndex].contractAddress);
+      //         return newAsset;
+      //       })
+      //     ),
+      //   };
+      // }
   
       if (mintSingleAsset) {
-        // Set up blank testData for thousands of users
+        // Create data for a single wearable
+        // mint option must be false
+        // multi option must be false
+        // Set up blank testData for thousands of users and add to data
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const emptyData: any = [];
         for (let i = 0; i < 1; i++) {
@@ -202,7 +192,7 @@ import {
             to: others[0],
             erc1155: [
               {
-                ids: [i],
+                ids: ["1"], // id 1
                 values: [1],
                 contractAddress: mfwContract.address,
               },
@@ -215,7 +205,7 @@ import {
               contractAddresses: [],
             },
           };
-          emptyData.push(await mintSingleAssetWithId(claim));
+          emptyData.push(claim);
         }
         for (let i = 1; i < mintSingleAsset; i++) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -238,7 +228,9 @@ import {
           };
           emptyData.push(claim);
         }
-        dataWithIds0 = emptyData;
+        dataSet_0 = emptyData;
+        // mint the single wearable and set the owner as the giveaway contract
+        await mintTestWearables(1, 2)
       }
   
       // Set up tree with test assets for each applicable giveaway
@@ -248,7 +240,7 @@ import {
       } = createClaimMerkleTree(
         network.live,
         chainId,
-        dataWithIds0,
+        dataSet_0,
         'TestMFWGiveaway'
       );
   
@@ -273,7 +265,7 @@ import {
         } = createClaimMerkleTree(
           network.live,
           chainId,
-          dataWithIds1,
+          dataSet_1,
           'TestMFWGiveaway'
         );
         allClaims.push(claims1);

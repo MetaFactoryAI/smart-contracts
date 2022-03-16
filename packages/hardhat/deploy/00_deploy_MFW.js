@@ -9,9 +9,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   // TODO: metadata URI updates for Ceramic
 
-  const file = await ipfs.add(globSource("./erc1155metadata", { recursive: true }))
-  console.log(file.cid.toString());
-  const tokenUri = "https://ipfs.io/ipfs/"+file.cid.toString()+"/{id}.json"
+  // const file = await ipfs.add(globSource("./erc1155metadata", { recursive: true }))
+  // console.log(file.cid.toString());
+  // const tokenUri = "https://ipfs.io/ipfs/"+file.cid.toString()+"/{id}.json"
 
   await deploy("MFW", {
     from: deployer,
@@ -22,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const mfw = await ethers.getContract("MFW", deployer);
 
   // Configure BaseTokenURI
-  await mfw.setBaseTokenURI("");
+  await mfw.setBaseTokenURI(""); // TODO: baseTokenURI
 };
 module.exports.tags = ["MFW"];
 

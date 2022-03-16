@@ -9,8 +9,6 @@ import "./access/AdminControl.sol";
 /// @notice This contract manages claims for [multiple] token types.
 
 contract MFWGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
-    ///////////////////////////////  Data //////////////////////////////
-
     bytes4 private constant ERC1155_RECEIVED = 0xf23a6e61;
     bytes4 private constant ERC1155_BATCH_RECEIVED = 0xbc197c81;
     bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
@@ -19,17 +17,9 @@ contract MFWGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
     mapping(address => mapping(bytes32 => bool)) public claimed;
     mapping(bytes32 => uint256) internal _expiryTime;
 
-    ///////////////////////////////  Events //////////////////////////////
-
     event NewGiveaway(bytes32 merkleRoot, uint256 expiryTime);
 
-    ///////////////////////////////  Constructor /////////////////////////
-
-    constructor() {
-        // TODO: add admin
-    }
-
-    ///////////////////////////////  Functions ///////////////////////////
+    constructor() {}
 
     /// @notice Function to add a new giveaway.
     /// @param merkleRoot The merkle root hash of the claim data.
