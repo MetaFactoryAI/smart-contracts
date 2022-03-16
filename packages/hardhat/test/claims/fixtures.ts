@@ -70,6 +70,8 @@ import {
         ethers.provider.getSigner(mfwAdmin)
       );
 
+      await mfwContractAsAdmin.setBaseTokenURI("testWearbleBaseTokenUri")
+
       // TODO: mintBaseExisting tests
       const mintBaseExistingErc1155 = async (toArray: string[], id: number, amountArray: BigNumber[], uriArray: string[]) =>
       mfwContractAsAdmin.mintBaseNew(toArray, id, amountArray, uriArray);

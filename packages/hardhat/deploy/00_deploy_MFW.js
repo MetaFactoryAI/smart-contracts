@@ -26,7 +26,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     mfwAdmin,
   );
 
-  // TODO: baseTokenURI
+  // Configure BaseTokenURI
+  await execute(
+    'MFW',
+    {from: deployer, log: true},
+    'setBaseTokenURI',
+    "mfw", // TODO: confirm desired base
+  );
 };
 module.exports.tags = ["MFW"];
 
