@@ -16,14 +16,11 @@ import {
   const zeroAddress = constants.AddressZero;  
   const {createDataArrayMultiClaim} = helpers;
   
-  const ipfsHashString =
-    '0x78b9f42c22c3c8b260b781578da3151e8200c741c6b7437bafaff5a9df9b403e';
-  
   type Options = {
     mint?: boolean; // supply assets and lands to MultiGiveaway
     multi?: boolean; // set up more than one giveaway (ie more than one claim hash)
     mintSingleAsset?: number; // mint a single asset and add to blank testData for mintSingleAsset number of users
-    numberOfAssets?: number; // specify a given number of assets to mint and test
+    numberOfWearables?: number; // specify a given number of different wearable ids to mint and test
     badData?: boolean; // set the merkle tree up with bad contract addresses and input values for ERC1155, ERC721 and ERC20 assets
   };
   
@@ -32,7 +29,7 @@ import {
     async function (hre, options?: Options) {
       const {network, getChainId} = hre;
       const chainId = await getChainId();
-      const {mint, multi, mintSingleAsset, numberOfAssets, badData} =
+      const {mint, multi, mintSingleAsset, numberOfWearables, badData} =
         options || {};
       const {
         deployer,
@@ -42,20 +39,16 @@ import {
       const others = await getUnnamedAccounts();
 
       // Giveaway contract
-
       await deployments.deploy('TestMFWGiveaway', {
         from: deployer,
         contract: 'MFWGiveaway',
         args: [],
       });
-  
       const giveawayContract = await ethers.getContract(
         'TestMFWGiveaway',
         deployer
       );
-
       await giveawayContract.approveAdmin(mfwGiveawayAdmin);
-  
       const giveawayContractAsAdmin = await ethers.getContract(
         'TestMFWGiveaway',
         mfwGiveawayAdmin
@@ -63,14 +56,13 @@ import {
 
       // Wearable contract
       const mfwContract = await ethers.getContract('MFW', deployer);
-
       await mfwContract.approveAdmin(mfwAdmin);
-
       const mfwContractAsAdmin = await mfwContract.connect(
         ethers.provider.getSigner(mfwAdmin)
       );
 
-      await mfwContractAsAdmin.setBaseTokenURI("testWearbleBaseTokenUri")
+      await mfwContractAsAdmin.setBaseTokenURI("testWearableBaseTokenUri") 
+      // TODO: uri tests
 
       // TODO: mintBaseExisting tests
       const mintBaseExistingErc1155 = async (toArray: string[], id: number, amountArray: BigNumber[], uriArray: string[]) =>
@@ -80,21 +72,19 @@ import {
       mfwContractAsAdmin.mintBaseNew(toArray, amountArray, uriArray);
   
       // Supply MFW to contract for testing 
-      async function mintTestWearables(startId: number, endId: number ) {
-        
+      let counter = 0;
+      async function mintTestWearables(startId: number, endId: number, amount: number ) {
         const owner = giveawayContract.address;
 
-        for (let i = startId; i < endId; i++) {
+        for (let i = startId; i <= endId; i++) {
             await mintBaseNewErc1155(
               [owner], // To
-              [BigNumber.from("5")], // Test supply will mint supply 5 for each id
+              [BigNumber.from(amount)], 
               [""], // The "base"
             );
+            counter +=1;
         }
       }
-
-      // TODO: mintBaseExisting
-      // TODO: update base
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       function assignReservedAddressToClaim(dataSet: any) {
@@ -111,25 +101,14 @@ import {
         return dataSet.map(async (claim: any) => {
           if (claim.erc1155) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            claim.erc1155.map(async (asset: any) => {
-              asset.contractAddress = mfwContract.address;
-              return asset;
+            claim.erc1155.map(async (item: any) => {
+              item.contractAddress = mfwContract.address;
+              return item;
             });
           }
           return claim;
         });
       }
-  
-      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // function setAssets(dataSet: any, amount: number) {
-      //   dataSet[0].erc1155[0].ids = [];
-      //   dataSet[0].erc1155[0].values = [];
-      //   for (let i = 0; i < amount; i++) {
-      //     // a big id to avoid collision with other setups
-      //     dataSet[0].erc1155[0].ids.push(i + 1000);
-      //     dataSet[0].erc1155[0].values.push(5);
-      //   }
-      // }
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let dataSet_0: any = JSON.parse(JSON.stringify(testData0));
@@ -145,15 +124,43 @@ import {
       assignTestContractAddressesToClaim(dataSet_0);
       assignTestContractAddressesToClaim(dataSet_1);
   
-      // if (numberOfAssets) {
-      //   setAssets(dataWithIds0, numberOfAssets);
-      // }
-  
       if (mint) {
-        await mintTestWearables(1, 7); // ids 1 to 6
+        await mintTestWearables(1, 6, 5); // ids 1 to 6 dataSet_0
         if (multi) {
-          await mintTestWearables(7, 21); // ids 7 to 20
+          await mintTestWearables(7, 20, 5); // ids 7 to 20 dataSet_1
         }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async function setAssets(dataSet: any, numberOfWearables: number) {
+        const newClaim: any = {
+          "to": others[0],
+          "erc1155": [{
+            "contractAddress": mfwContract.address,
+            "ids": [],
+            "values": []
+          }],
+          "erc721": [],
+          "erc20": {
+            "contractAddresses": [],
+            "amounts": []
+          }
+        };
+        
+        let newWearables = 0;
+        for (let id = 21; id <= 21 + numberOfWearables - 1; id++) {
+          newClaim.erc1155[0].ids[newWearables] = id;
+          newClaim.erc1155[0].values[newWearables] = 5;
+          newWearables +=1;
+        }
+        dataSet.push(newClaim)
+        await mintTestWearables(21, 21 + numberOfWearables -1, 5) // TODO: fix failing test
+      }
+
+      if (numberOfWearables) {
+        // mint option must be true
+        // multi option must be true
+        setAssets(dataSet_1, numberOfWearables);
       }
   
       if (mintSingleAsset) {
@@ -207,7 +214,7 @@ import {
         }
         dataSet_0 = emptyData;
         // mint the single wearable and set the owner as the giveaway contract
-        await mintTestWearables(1, 2)
+        await mintTestWearables(1, 2, 5)
       }
   
       // Set up tree with test assets for each applicable giveaway
@@ -233,7 +240,7 @@ import {
       ); // no expiry
       allMerkleRoots.push(merkleRootHash0);
       allTrees.push(new MerkleTree(hashArray));
-  
+      
       // Multi giveaway
       if (multi) {
         const {
@@ -257,29 +264,26 @@ import {
   
       // Set up bad contract addresses and input amounts in merkle tree data and claim
       if (badData) {
-        // dataWithIds0[0].erc1155[0].values = [5, 5, 5, 5, 5, 5, 5, 5];
-        // dataWithIds0[1].erc20.amounts = [200, 300, 200];
-        // dataWithIds0[3].erc1155[0].contractAddress = zeroAddress;
-        // dataWithIds0[2].erc721[0].contractAddress = zeroAddress;
-        // dataWithIds0[4].erc20.contractAddresses[0] = zeroAddress;
-  
-        // const {
-        //   claims: badClaims0,
-        //   merkleRootHash: badMerkleRootHash0,
-        // } = createClaimMerkleTree(
-        //   network.live,
-        //   chainId,
-        //   dataWithIds0,
-        //   'Multi_Giveaway_1'
-        // );
-        // allClaims.push(badClaims0);
-        // allMerkleRoots.push(badMerkleRootHash0);
-        // const hashArray2 = createDataArrayMultiClaim(badClaims0);
-        // allTrees.push(new MerkleTree(hashArray2));
-        // await giveawayContractAsAdmin.addNewGiveaway(
-        //   badMerkleRootHash0,
-        //   '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
-        // ); // no expiry
+        dataSet_0[0].erc1155[0].values = [5, 5, 5, 5, 5, 5, 5, 5];
+        dataSet_0[3].erc1155[0].contractAddress = zeroAddress;
+       
+        const {
+          claims: badClaims0,
+          merkleRootHash: badMerkleRootHash0,
+        } = createClaimMerkleTree(
+          network.live,
+          chainId,
+          dataSet_0,
+          'Multi_Giveaway_1'
+        );
+        allClaims.push(badClaims0);
+        allMerkleRoots.push(badMerkleRootHash0);
+        const hashArray2 = createDataArrayMultiClaim(badClaims0);
+        allTrees.push(new MerkleTree(hashArray2));
+        await giveawayContractAsAdmin.addNewGiveaway(
+          badMerkleRootHash0,
+          '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+        ); // no expiry
       }
   
       return {

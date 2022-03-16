@@ -24,6 +24,8 @@ const zeroAddress = constants.AddressZero;
 const emptyBytes32 =
   '0x0000000000000000000000000000000000000000000000000000000000000000';
 
+  // TODO: delete sand option
+
 describe('MFW_Giveaway', function () {
   describe('Roles', function () {
     it('Admin can add a new giveaway', async function () {
@@ -84,7 +86,6 @@ describe('MFW_Giveaway', function () {
     it('Claimed status is correctly updated after allocated tokens are claimed - 2 claims of 2 claimed', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -94,6 +95,7 @@ describe('MFW_Giveaway', function () {
         allTrees,
         allClaims,
         allMerkleRoots,
+        mfwContract
       } = setUp;
 
       // make arrays of claims and proofs relevant to specific user
@@ -351,7 +353,6 @@ describe('MFW_Giveaway', function () {
     it('User can claim allocated multiple tokens from Giveaway contract', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -406,11 +407,11 @@ describe('MFW_Giveaway', function () {
     });
 
     it('User can claim allocated 64 tokens from Giveaway contract', async function () {
-      const numberOfAssets = 64;
+      const numberOfWearables = 64;
       const options = {
         mint: true,
-        sand: true,
-        numberOfAssets,
+        multi: true,
+        numberOfWearables,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -425,9 +426,9 @@ describe('MFW_Giveaway', function () {
       // make arrays of claims and proofs relevant to specific user
       const userProofs = [];
       const userTrees = [];
-      userTrees.push(allTrees[0]);
+      userTrees.push(allTrees[1]);
       const userClaims = [];
-      const claim = allClaims[0][0];
+      const claim = allClaims[1][4];
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
@@ -435,7 +436,7 @@ describe('MFW_Giveaway', function () {
         );
       }
       const userMerkleRoots = [];
-      userMerkleRoots.push(allMerkleRoots[0]);
+      userMerkleRoots.push(allMerkleRoots[1]);
 
       const giveawayContractAsUser = await giveawayContract.connect(
         ethers.provider.getSigner(others[0])
@@ -450,7 +451,7 @@ describe('MFW_Giveaway', function () {
       );
       console.log(
         'Number of assets:',
-        numberOfAssets,
+        numberOfWearables,
         '; Gas used:',
         receipt.gasUsed.toString()
       );
@@ -459,7 +460,7 @@ describe('MFW_Giveaway', function () {
         receipt,
         'TransferBatch'
       );
-      expect(event.args.ids.length).to.eq(numberOfAssets);
+      expect(event.args.ids.length).to.eq(numberOfWearables);
     });
 
     it('Claimed Event is emitted for successful claim', async function () {
@@ -524,20 +525,6 @@ describe('MFW_Giveaway', function () {
 
       expect(claimedEvent.args[1][0][2]).to.equal(
         claim.erc1155[0].contractAddress
-      );
-
-      expect(claimedEvent.args[2][0][0][0]).to.equal(claim.erc721[0].ids[0]);
-      expect(claimedEvent.args[2][0][0][1]).to.equal(claim.erc721[0].ids[1]);
-      expect(claimedEvent.args[2][0][0][2]).to.equal(claim.erc721[0].ids[2]);
-      expect(claimedEvent.args[2][0][0][3]).to.equal(claim.erc721[0].ids[3]);
-      expect(claimedEvent.args[2][0][0][4]).to.equal(claim.erc721[0].ids[4]);
-      expect(claimedEvent.args[2][0][0][5]).to.equal(claim.erc721[0].ids[5]);
-      expect(claimedEvent.args[2][0][1]).to.equal(
-        claim.erc721[0].contractAddress
-      );
-      expect(claimedEvent.args[3][0][0]).to.equal(claim.erc20.amounts[0]);
-      expect(claimedEvent.args[3][1][0]).to.equal(
-        claim.erc20.contractAddresses[0]
       );
     });
 
@@ -671,7 +658,7 @@ describe('MFW_Giveaway', function () {
           userClaims,
           userProofs
         )
-      ).to.be.revertedWith('MULTIGIVEAWAY_DESTINATION_ALREADY_CLAIMED');
+      ).to.be.revertedWith('DESTINATION_ALREADY_CLAIMED');
     });
 
     it('User cannot claim from Giveaway contract if destination is not the reserved address', async function () {
@@ -794,7 +781,6 @@ describe('MFW_Giveaway', function () {
     it('User cannot claim from Giveaway if ERC1155 contract address is zeroAddress', async function () {
       const options = {
         mint: true,
-        sand: true,
         badData: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -832,7 +818,7 @@ describe('MFW_Giveaway', function () {
           userClaims,
           userProofs
         )
-      ).to.be.revertedWith('INVALID_CLAIM_CONTRACT_ZERO_ADDRESS');
+      ).to.be.revertedWith('INVALID_CONTRACT_ZERO_ADDRESS');
     });
 
     // it('User cannot claim from Giveaway if ERC721 contract address is zeroAddress', async function () {
@@ -1008,7 +994,7 @@ describe('MFW_Giveaway', function () {
           userClaims,
           userProofs
         )
-      ).to.be.revertedWith('INVALID_CLAIM_INPUT');
+      ).to.be.revertedWith('INVALID_INPUT');
     });
 
     it('User cannot claim after the expiryTime', async function () {
@@ -1148,46 +1134,46 @@ describe('MFW_Giveaway', function () {
       ).to.be.revertedWith(`ERC1155: insufficient balance for transfer`);
     });
 
-    it('User cannot claim sand when contract does not hold any - multiple giveaways, 1 claim', async function () {
-      const options = {
-        mint: true,
-        multi: true,
-      };
-      const setUp = await setupTestGiveaway(options);
-      const {
-        giveawayContract,
-        others,
-        allTrees,
-        allClaims,
-        allMerkleRoots,
-      } = setUp;
+    // it('User cannot claim sand when contract does not hold any - multiple giveaways, 1 claim', async function () {
+    //   const options = {
+    //     mint: true,
+    //     multi: true,
+    //   };
+    //   const setUp = await setupTestGiveaway(options);
+    //   const {
+    //     giveawayContract,
+    //     others,
+    //     allTrees,
+    //     allClaims,
+    //     allMerkleRoots,
+    //   } = setUp;
 
-      // make arrays of claims and proofs relevant to specific user
-      const userProofs = [];
-      const userTrees = [];
-      userTrees.push(allTrees[0]);
-      const userClaims = [];
-      userClaims.push(allClaims[0][0]);
-      for (let i = 0; i < userClaims.length; i++) {
-        userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
-        );
-      }
-      const userMerkleRoots = [];
-      userMerkleRoots.push(allMerkleRoots[0]);
+    //   // make arrays of claims and proofs relevant to specific user
+    //   const userProofs = [];
+    //   const userTrees = [];
+    //   userTrees.push(allTrees[0]);
+    //   const userClaims = [];
+    //   userClaims.push(allClaims[0][0]);
+    //   for (let i = 0; i < userClaims.length; i++) {
+    //     userProofs.push(
+    //       userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+    //     );
+    //   }
+    //   const userMerkleRoots = [];
+    //   userMerkleRoots.push(allMerkleRoots[0]);
 
-      const giveawayContractAsUser = await giveawayContract.connect(
-        ethers.provider.getSigner(others[0])
-      );
+    //   const giveawayContractAsUser = await giveawayContract.connect(
+    //     ethers.provider.getSigner(others[0])
+    //   );
 
-      await expect(
-        giveawayContractAsUser.claimMultipleTokensFromMultipleMerkleTree(
-          userMerkleRoots,
-          userClaims,
-          userProofs
-        )
-      ).to.be.revertedWith(`not enough fund`);
-    });
+    //   await expect(
+    //     giveawayContractAsUser.claimMultipleTokensFromMultipleMerkleTree(
+    //       userMerkleRoots,
+    //       userClaims,
+    //       userProofs
+    //     )
+    //   ).to.be.revertedWith(`not enough fund`);
+    // });
 
     it('User can claim allocated multiple tokens from Giveaway contract - multiple giveaways, 1 claim', async function () {
       const options = {
@@ -1364,7 +1350,7 @@ describe('MFW_Giveaway', function () {
           userClaims,
           userProofs
         )
-      ).to.be.revertedWith('MULTIGIVEAWAY_INVALID_INPUT');
+      ).to.be.revertedWith('INVALID_INPUT');
     });
 
     it('User cannot claim from Giveaway contract if the claims array length does not match proofs array length', async function () {
@@ -1408,7 +1394,7 @@ describe('MFW_Giveaway', function () {
           userClaims,
           userProofs
         )
-      ).to.be.revertedWith('MULTIGIVEAWAY_INVALID_INPUT');
+      ).to.be.revertedWith('INVALID_INPUT');
     });
 
     it('User cannot claim allocated tokens from Giveaway contract more than once - multiple giveaways, 2 claims', async function () {
@@ -1461,7 +1447,7 @@ describe('MFW_Giveaway', function () {
           userClaims,
           userProofs
         )
-      ).to.be.revertedWith(`MULTIGIVEAWAY_DESTINATION_ALREADY_CLAIMED`);
+      ).to.be.revertedWith(`DESTINATION_ALREADY_CLAIMED`);
     });
   });
 
@@ -1492,32 +1478,32 @@ describe('MFW_Giveaway', function () {
       ).to.be.revertedWith(`ERC1155: insufficient balance for transfer`);
     });
 
-    it('User cannot claim sand when contract does not hold any', async function () {
-      const options = {
-        mint: true,
-      };
-      const setUp = await setupTestGiveaway(options);
-      const {
-        giveawayContract,
-        others,
-        allTrees,
-        allClaims,
-        allMerkleRoots,
-      } = setUp;
+    // it('User cannot claim sand when contract does not hold any', async function () {
+    //   const options = {
+    //     mint: true,
+    //   };
+    //   const setUp = await setupTestGiveaway(options);
+    //   const {
+    //     giveawayContract,
+    //     others,
+    //     allTrees,
+    //     allClaims,
+    //     allMerkleRoots,
+    //   } = setUp;
 
-      const tree = allTrees[0];
-      const claim = allClaims[0][0];
-      const proof = tree.getProof(calculateMultiClaimHash(claim));
-      const merkleRoot = allMerkleRoots[0];
+    //   const tree = allTrees[0];
+    //   const claim = allClaims[0][0];
+    //   const proof = tree.getProof(calculateMultiClaimHash(claim));
+    //   const merkleRoot = allMerkleRoots[0];
 
-      const giveawayContractAsUser = await giveawayContract.connect(
-        ethers.provider.getSigner(others[0])
-      );
+    //   const giveawayContractAsUser = await giveawayContract.connect(
+    //     ethers.provider.getSigner(others[0])
+    //   );
 
-      await expect(
-        giveawayContractAsUser.claimMultipleTokens(merkleRoot, claim, proof)
-      ).to.be.revertedWith(`not enough fund`);
-    });
+    //   await expect(
+    //     giveawayContractAsUser.claimMultipleTokens(merkleRoot, claim, proof)
+    //   ).to.be.revertedWith(`not enough fund`);
+    // });
 
     it('User can claim allocated multiple tokens from Giveaway contract', async function () {
       const options = {
@@ -1610,21 +1596,7 @@ describe('MFW_Giveaway', function () {
         claim.erc1155[0].contractAddress
       );
 
-      expect(claimedEvent.args[2][0][0][0]).to.equal(claim.erc721[0].ids[0]);
-      expect(claimedEvent.args[2][0][0][1]).to.equal(claim.erc721[0].ids[1]);
-      expect(claimedEvent.args[2][0][0][2]).to.equal(claim.erc721[0].ids[2]);
-      expect(claimedEvent.args[2][0][0][3]).to.equal(claim.erc721[0].ids[3]);
-      expect(claimedEvent.args[2][0][0][4]).to.equal(claim.erc721[0].ids[4]);
-      expect(claimedEvent.args[2][0][0][5]).to.equal(claim.erc721[0].ids[5]);
-      expect(claimedEvent.args[2][0][1]).to.equal(
-        claim.erc721[0].contractAddress
-      );
-      expect(claimedEvent.args[3][0][0]).to.equal(claim.erc20.amounts[0]);
-      expect(claimedEvent.args[3][1][0]).to.equal(
-        claim.erc20.contractAddresses[0]
-      );
-
-      expect(claimedEvent.args[4]).to.equal(merkleRoot);
+      // expect(claimedEvent.args[2]).to.equal(merkleRoot); TODO:
     });
     it('User cannot claim more than once', async function () {
       const options = {
@@ -1654,7 +1626,7 @@ describe('MFW_Giveaway', function () {
       );
       await expect(
         giveawayContractAsUser.claimMultipleTokens(merkleRoot, claim, proof)
-      ).to.be.revertedWith('MULTIGIVEAWAY_DESTINATION_ALREADY_CLAIMED');
+      ).to.be.revertedWith('DESTINATION_ALREADY_CLAIMED');
     });
   });
 });

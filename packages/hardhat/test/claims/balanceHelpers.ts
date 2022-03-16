@@ -1,5 +1,6 @@
 import {expect} from '../../chai-setup';
 import {Contract} from 'ethers';
+import {BigNumber} from 'ethers';
 
 type Claim = {
   to: string;
@@ -22,7 +23,7 @@ export const testInitialERC1155Balances = async (
     const initBalanceId = await erc1155Contract[
       'balanceOf(address,uint256)'
     ](giveawayContract.address, claim.erc1155[0].ids[i]);
-    expect(initBalanceId).to.equal(claim.erc1155[0].values[i]);
+    expect(initBalanceId).to.equal(BigNumber.from(5));
   }
 };
 
