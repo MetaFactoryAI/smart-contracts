@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "@manifoldxyz/creator-core-solidity/contracts/ERC1155Creator.sol";
+import "./CustomERC1155Creator.sol";
 
 // ********************************************************************************
 // ********************************************************************************
@@ -38,8 +38,8 @@ import "@manifoldxyz/creator-core-solidity/contracts/ERC1155Creator.sol";
 // ********************************************************************************
 
 /// @title MFW wearables contract
-contract MFW is ERC1155Creator {
-    constructor() ERC1155Creator() {}
+contract MFW is CustomERC1155Creator {
+    constructor() CustomERC1155Creator() {}
 
     function name() external pure returns (string memory _name) {
         return "MetaFactory Wearables";
@@ -47,5 +47,12 @@ contract MFW is ERC1155Creator {
 
     function symbol() external pure returns (string memory _symbol) {
         return "MFW";
+    }
+
+    function exists(
+        address extension,
+        uint256 id
+    ) public view returns (bool) {
+        return wasEverMinted[extension][id];
     }
 }
