@@ -2,13 +2,13 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./claims/ClaimERC1155ERC721ERC20.sol";
-import "./access/AdminControl.sol";
 
 /// @title Giveaway contract for claiming.
-/// @notice This contract manages claims for [multiple] token types.
+/// @notice This contract manages claims for multiple token types.
 
-contract MFWGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
+contract MFWGiveaway is AccessControl, ClaimERC1155ERC721ERC20 {
     bytes4 private constant ERC1155_RECEIVED = 0xf23a6e61;
     bytes4 private constant ERC1155_BATCH_RECEIVED = 0xbc197c81;
     bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
@@ -19,12 +19,14 @@ contract MFWGiveaway is AdminControl, ClaimERC1155ERC721ERC20 {
 
     event NewGiveaway(bytes32 merkleRoot, uint256 expiryTime);
 
-    constructor() {}
+    constructor(address admin) {
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
+    }
 
     /// @notice Function to add a new giveaway.
     /// @param merkleRoot The merkle root hash of the claim data.
     /// @param expiryTime The expiry time for the giveaway.
-    function addNewGiveaway(bytes32 merkleRoot, uint256 expiryTime) external adminRequired {
+    function addNewGiveaway(bytes32 merkleRoot, uint256 expiryTime) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _expiryTime[merkleRoot] = expiryTime;
         emit NewGiveaway(merkleRoot, expiryTime);
     }

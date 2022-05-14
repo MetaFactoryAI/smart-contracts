@@ -16,17 +16,22 @@ const main = async () => {
     mfw.mintBaseExisting(toArray, tokenIdArray, amountArray);
 
   // generate dummy NFTs for an existing ID and base and give to toAddress
+
+  // TODO: generate NFTs by ID as per API https://mf-services.vercel.app/api/nftMetadata/ 
+  // see mintBatch
+  // mintBatch within limits
+
   await mintBaseExistingErc1155(
     [toAddress], // To
     [BigNumber.from("1")], // ID: in order to work this ID must already have been minted!
     [BigNumber.from("5")], // Desired supply
-    [""], // The "base"
+    ["nftMetadata/"], // The "base"
     {
       gasLimit: 400000,
     }
   );
-  const balance = await mfw.balanceOf(toAddress, BigNumber.from("1"));
-  console.log("balance", balance.toNumber());
+  // const balance = await mfw.balanceOf(toAddress, BigNumber.from("1"));
+  // console.log("balance", balance.toNumber());
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
