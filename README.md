@@ -1,10 +1,30 @@
+<!-- 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@         @@@         @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@   @@@   @@@   @@@@@@@@@
+@@@@@@@@@@   @@@         @@@   @@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+-->
+
 # Wearable NFT claims
 Work in progress wearable and claiming development.
 It leverages:
 - Scaffold-eth
 - The Sandbox Game's MultiGiveaway contract
-- Manifold's base NFT structure, as amended by LucaLush.eth
+- Manifold's base NFT structure, see https://github.com/manifoldxyz/creator-core-solidity 
 
+# Dev
 Local dev full-stack quickstart:
 ```yarn chain```
 ```yarn start```
@@ -31,38 +51,3 @@ Scaffold-eth is not a product itself but more of a combination or stack of other
 - Surge for publishing your app.
 - Tenderly / The Graph / Etherscan / Infura / Blocknative and more!
 - Support for L2 / Sidechains like Optimism and Arbitrum.
-
-# Installation and setup
-
-⚠️ First, make sure you have: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
-cd scaffold-eth
-yarn install
-yarn chain
-```
-
-> in a second terminal window:
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
-
-If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
-
-# Documentation
-
-For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
-
-# 💬 Support Chat
-
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
