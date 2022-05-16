@@ -6,11 +6,9 @@ import "@tenderly/hardhat-tenderly";
 import "hardhat-deploy";
 import "@eth-optimism/hardhat-ovm";
 import "@nomiclabs/hardhat-ethers";
-
-// const defaultNetwork = "rinkeby"; // TODO: fix deploy
+import '@nomiclabs/hardhat-etherscan';
 
 export default {
-  // defaultNetwork,
 
   networks: {
     localhost: {
@@ -20,6 +18,7 @@ export default {
       url: node_url('rinkeby'),
       accounts: accounts('rinkeby'),
       tags: ['testnet'],
+      // TODO: gasPrice if need to redeploy MFW
     },
     mainnet: {
       url: node_url('mainnet'),
@@ -69,6 +68,13 @@ export default {
     mfwGiveawayAdmin: {
       default: 2, // here this will by default take the second account as mfwGiveawayAdmin
       rinkeby: 2
+    },
+  },
+  etherscan: {
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_API_KEY_MAINNET || '',
+      rinkeby: process.env.ETHERSCAN_API_KEY_RINKEBY || '',
+      goerli: process.env.ETHERSCAN_API_KEY_GOERLI || ''
     },
   },
 };
