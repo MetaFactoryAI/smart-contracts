@@ -27,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await execute(
     'MFW',
     {from: mfwAdmin, log: true},
-    'setTokenURI',
+    'setBaseTokenURI',
     "nftMetadata/",
   );
 };

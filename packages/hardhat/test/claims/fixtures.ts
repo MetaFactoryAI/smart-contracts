@@ -42,13 +42,13 @@ import {
       await deployments.deploy('TestMFWGiveaway', {
         from: deployer,
         contract: 'MFWGiveaway',
-        args: [],
+        args: [mfwGiveawayAdmin],
       });
       const giveawayContract = await ethers.getContract(
         'TestMFWGiveaway',
         deployer
       );
-      await giveawayContract.approveAdmin(mfwGiveawayAdmin);
+     
       const giveawayContractAsAdmin = await ethers.getContract(
         'TestMFWGiveaway',
         mfwGiveawayAdmin
