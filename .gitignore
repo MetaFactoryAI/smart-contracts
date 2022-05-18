@@ -12,7 +12,12 @@ packages/react-app/src/contracts/*
 !packages/react-app/src/contracts/external_contracts.js
 packages/hardhat/cache*
 
-packages/**/data
+packages/react-app/data
+packages/services/data
+packages/services/graph-node/data/
+packages/subgraph/data
+
+secret/
 
 packages/subgraph/config/config.json
 tenderly.yaml
