@@ -3,7 +3,7 @@ import MerkleTree from '../../lib/merkleTree';
 import helpers from '../../lib/merkleTreeHelper';
 
 const {createDataArrayMultiClaim} = helpers;
-import {default as testData} from '../../data/mfw_giveaway_1/claims_0_hardhat.json';
+import {default as testData} from '../../data/MFWGiveaway/claims_0_hardhat.json';
 
 describe('MerkleTree_multi', function () {
   it('should validate the data', async function () {

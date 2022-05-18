@@ -9,8 +9,8 @@ import {
   import MerkleTree from '../../lib/merkleTree';
   import {createClaimMerkleTree} from '../../data/getClaims';
   import helpers from '../../lib/merkleTreeHelper';
-  import {default as testData0} from '../../data/mfw_giveaway_1/claims_0_hardhat.json';
-  import {default as testData1} from '../../data/mfw_giveaway_1/claims_1_hardhat.json';
+  import {default as testData0} from '../../data/MFWGiveaway/claims_0_hardhat.json';
+  import {default as testData1} from '../../data/MFWGiveaway/claims_1_hardhat.json';
   import {expectReceiptEventWithArgs, waitFor, withSnapshot} from '../utils';
   
   const zeroAddress = constants.AddressZero;  

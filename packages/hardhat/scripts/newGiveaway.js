@@ -1,28 +1,29 @@
 /**
  * How to use:
- *  - yarn execute <NETWORK> ./setup/add_new_multi_giveaway.ts <GIVEAWAY_CONTRACT> <GIVEAWAY_NAME>
- *
+ *  - yarn run hardhat --network localhost run ./scripts/newGiveaway.js
+ * 
  * GIVEAWAY_CONTRACT: from data/mfw_giveaway_1/robot.json then the giveaway contract is: MFW_Giveaway_1 
  * GIVEAWAY_NAME: from data/mfw_giveaway_1/robot.json then the giveaway name is: robot
  */
 
 // TODO: test and update below
 
- import fs from 'fs-extra';
- import hre from 'hardhat';
+const fs = require('fs-extra');
+const hre = require('hardhat');
  
- import {createClaimMerkleTree} from '../data/giveaways/multi_giveaway_1/getClaims';
- import helpers from '../lib/merkleTreeHelper';
- const {calculateMultiClaimHash} = helpers;
- 
- const args = process.argv.slice(2);
- const claimContract = args[0];
- const claimFile = args[1];
- 
+ const {createClaimMerkleTree} = require('../data/getClaims.ts');
+ const helpers = require('../lib/merkleTreeHelper.ts');
+ const { calculateMultiClaimHash } = helpers.default;
+
+const claimContract = "MFWGiveaway";
+const claimFile = "TestGiveawayLocalhost";
+
  const func = async function () {
-   const {deployments, network, getChainId} = hre;
+   const {deployments, network, getChainId, getNamedAccounts} = hre;
    const {execute, read, catchUnknownSigner} = deployments;
    const chainId = await getChainId();
+
+  const {mfwGiveawayAdmin} = await getNamedAccounts();
  
    let claimData;
    try {
@@ -67,16 +68,13 @@
      return;
    }
  
-   // TODO: update to new admin
-   const currentAdmin = await read(claimContract, 'getAdmin');
- 
    await catchUnknownSigner(
      execute(
        claimContract,
-       {from: currentAdmin, log: true},
+       {from: mfwGiveawayAdmin, log: true},
        'addNewGiveaway',
        merkleRootHash,
-       '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' // do not expire, TODO: check
+       '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' // do not expire, TODO: check when we want the giveaway to expire
      )
    );
  
@@ -89,15 +87,16 @@
        proof: tree.getProof(calculateMultiClaimHash(claim)),
      });
    }
-   const basePath = `./secret/multi-giveaway/${network.name}`;
-   const proofPath = `${basePath}/.multi_claims_proofs_${claimFile}_${chainId}.json`;
-   const rootHashPath = `${basePath}/.multi_claims_root_hash_${claimFile}_${chainId}.json`;
+   const basePath = `../secret/mfw-giveaway/${network.name}`;
+   const proofPath = `${basePath}/.mfw_claims_proofs_${claimFile}_${chainId}.json`;
+   const rootHashPath = `${basePath}/.mfw_claims_root_hash_${claimFile}_${chainId}.json`;
    fs.outputJSONSync(proofPath, claimsWithProofs);
    fs.outputFileSync(rootHashPath, merkleRootHash);
    console.log(`Proofs at: ${proofPath}`);
    console.log(`Hash at: ${rootHashPath}`);
  };
- export default func;
+ 
+ module.exports = func;
  
  if (require.main === module) {
    func(hre);
