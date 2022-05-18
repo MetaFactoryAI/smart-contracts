@@ -15,20 +15,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     mfwAdmin,
   );
 
-  // Configure prefix
-  await execute(
-    'MFW',
-    {from: mfwAdmin, log: true},
-    'setTokenURIPrefix',
-    "https://mf-services.vercel.app/api/",
-  );
-
   // Configure tokenURI for first wearable drop
   await execute(
     'MFW',
     {from: mfwAdmin, log: true},
     'setBaseTokenURI',
-    "nftMetadata/",
+    "https://mf-services.vercel.app/api/nftMetadata/",
   );
 };
 module.exports.tags = ["MFW", "MWF_deploy"];
