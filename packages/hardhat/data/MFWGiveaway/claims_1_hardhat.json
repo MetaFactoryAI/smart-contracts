@@ -1,0 +1,51 @@
+[
+  {
+    "to": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "erc1155": [{
+      "ids": ["7", "8", "9"],
+      "values": [5, 5, 5]
+    }],
+    "erc721": [],
+    "erc20": {
+      "contractAddresses": [],
+      "amounts": []
+    }
+  },
+  {
+    "to": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "erc1155": [{
+      "ids": ["10"],
+      "values": [1]
+    }],
+    "erc721": [],
+    "erc20": {
+      "amounts": [],
+      "contractAddresses": []
+    }
+  },
+  {
+    "to": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "erc1155": [{
+      "ids": ["11", "12", "13"],
+      "values": [5, 5, 5]
+    }],
+    "erc721": [],
+    "erc20": {
+      "amounts": [],
+      "contractAddresses": []
+    }
+  },
+  {
+    "to": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "erc1155": [{
+      "contractAddress": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "ids": ["14", "15", "16", "17", "18", "19", "20"],
+      "values": [4, 3, 2, 1, 2, 3, 4]
+    }],
+    "erc721": [],
+    "erc20": {
+      "contractAddresses": [],
+      "amounts": []
+    }
+  }
+]

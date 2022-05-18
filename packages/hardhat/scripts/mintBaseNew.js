@@ -29,7 +29,7 @@ const main = async () => {
   const wearableData = response.data;
   const idsUnfiltered = [];
   const supply = [];
-  for (let i = 0; i < wearableData.length; i++) {
+  for (let i = 0; i < 5 /*wearableData.length*/; i++) {
     idsUnfiltered.push(wearableData[i]);
     // TODO: supplies
   }
@@ -87,7 +87,7 @@ const main = async () => {
   if (network.name !== 'hardhat') {
     fs.writeFileSync(
       `./mfw_minted_${chainId}.json`,
-      JSON.stringify(idsMinted, null, '  ')
+      JSON.stringify(idsMinted, null, '  ') // TODO: convert from BigNumber
     );
   }
 };

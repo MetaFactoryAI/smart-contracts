@@ -1,12 +1,7 @@
 /**
  * How to use:
  *  - yarn run hardhat --network localhost run ./scripts/newGiveaway.js
- * 
- * GIVEAWAY_CONTRACT: from data/mfw_giveaway_1/robot.json then the giveaway contract is: MFW_Giveaway_1 
- * GIVEAWAY_NAME: from data/mfw_giveaway_1/robot.json then the giveaway name is: robot
  */
-
-// TODO: test and update below
 
 const fs = require('fs-extra');
 const hre = require('hardhat');
@@ -15,8 +10,8 @@ const hre = require('hardhat');
  const helpers = require('../lib/merkleTreeHelper.ts');
  const { calculateMultiClaimHash } = helpers.default;
 
-const claimContract = "MFWGiveaway";
-const claimFile = "TestGiveawayLocalhost";
+const claimContract = "MFWGiveaway"; // the name of the directory in data/ as well as the name of the contract
+const claimFile = "TestGiveawayLocalhost"; // the name of the claim file in data/
 
  const func = async function () {
    const {deployments, network, getChainId, getNamedAccounts} = hre;
