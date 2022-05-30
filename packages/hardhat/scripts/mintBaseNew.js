@@ -22,24 +22,24 @@ const main = async () => {
   const chainId = await getChainId();
 
   // TODO: confirm destination for minting
-  const toAddress = mfwAdmin;
+  const toAddress = "0x08749a19797531979654D8384112353c7F046aC5"; // Rinkeby giveaway contract
 
   // Gather IDs to mint
-  const response = await axios.get("https://mf-services.vercel.app/api/nftMetadata/");
-  const wearableData = response.data;
-  const idsUnfiltered = [];
-  const supply = [];
-  for (let i = 0; i < 5 /*wearableData.length*/; i++) {
-    idsUnfiltered.push(wearableData[i]);
-    // TODO: supplies
-  }
+  // const response = await axios.get("https://mf-services.vercel.app/api/nftMetadata/");
+  // const wearableData = response.data;
+  // const idsUnfiltered = [];
+  // const supply = [];
+  // for (let i = 0; i < 95 /*wearableData.length*/; i++) {
+  //   idsUnfiltered.push(wearableData[i]);
+  //   // TODO: supplies
+  // }
   
-  const uniqueIds = [ ... new Set(idsUnfiltered.map(id => id.nft_token_id))];
-  uniqueIds.sort();
+  // const uniqueIds = [ ... new Set(idsUnfiltered.map(id => id.nft_token_id))];
+  // uniqueIds.sort();
 
-  // console.log("\n\n 🤖 New IDs to be minted " +uniqueIds + "...\n");
-  console.log("\n\n 🧮 ID count " +uniqueIds.length + "...\n");
-  console.log("\n\n 🎫 Minting to base new " + toAddress + "...\n");
+  // // console.log("\n\n 🤖 New IDs to be minted " +uniqueIds + "...\n");
+  // console.log("\n\n 🧮 ID count " +uniqueIds.length + "...\n");
+  // console.log("\n\n 🎫 Minting to base new " + toAddress + "...\n");
   const mfw = await ethers.getContract("MFW", mfwAdmin);
 
   // ERC1155
@@ -47,10 +47,10 @@ const main = async () => {
     mfw.mintBaseNew(toArray, amountArray, uriArray);
 
   const idsMinted = [];
-  for (i = 0; i < uniqueIds.length; i++) {
+  for (i = 0; i < 95 /*uniqueIds.length*/; i++) {
     const tx = await mintBaseNewErc1155(
       [toAddress], // To
-      [BigNumber.from("5")], // supply
+      [BigNumber.from("10")], // supply
       [""], // uri
       {
         gasLimit: 400000,
