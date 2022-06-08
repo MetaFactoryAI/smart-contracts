@@ -23,17 +23,21 @@ export function createClaimMerkleTree(
 
   let expose = false;
   let secret;
+  const TEST_SECRET = "test";
   try {
     secret = fs.readFileSync(secretPath);
   } catch (e) {
     if (isDeploymentChainId) {
       throw e;
     }
-    // Make sure you have a secret file
+    // Make sure you have a secret file for deployments to live networks (mainnet, live test networks)
+    // Secrets are located at packages/.secret/mfw-giveaway
+    // isDeploymentChainId is true for live networks (see hardhat deploy network.live)
   }
 
   if (!isDeploymentChainId) {
     expose = true;
+    secret = TEST_SECRET;
   }
 
   const saltedClaims = saltMultiClaim(claimData, secret);
