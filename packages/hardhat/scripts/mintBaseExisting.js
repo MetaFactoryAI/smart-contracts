@@ -6,9 +6,9 @@ const delayMS = 1000;
 
 const main = async () => {
   const { deployer } = await getNamedAccounts();
-  const toAddress = "0x34447Da006A91d855c702A6759e2FCEA35b31Da2";
+  const toAddress = "0x08749a19797531979654D8384112353c7F046aC5"; // Rinkeby giveaway contract
 
-  console.log("\n\n 🎫 Minting to base existing" + toAddress + "...\n");
+  console.log("\n\n 🎫 Minting to base existing " + toAddress + "...\n");
   const mfw = await ethers.getContract("MFW", deployer);
 
   // ERC1155
@@ -17,21 +17,30 @@ const main = async () => {
 
   // generate dummy NFTs for an existing ID and base and give to toAddress
 
-  // TODO: generate NFTs by ID as per API https://mf-services.vercel.app/api/nftMetadata/ 
-  // see mintBatch
-  // mintBatch within limits
-
-  await mintBaseExistingErc1155(
-    [toAddress], // To
-    [BigNumber.from("1")], // ID: in order to work this ID must already have been minted!
-    [BigNumber.from("5")], // Desired supply
-    ["nftMetadata/"], // The "base"
-    {
-      gasLimit: 400000,
-    }
-  );
+  for (i = 1; i < 6; i++) {
+    await mintBaseExistingErc1155(
+      [toAddress], // To
+      [BigNumber.from(i)], // ID: in order to work this ID must already have been minted!
+      [BigNumber.from("20")], // Desired supply
+      [""], // The "base"
+      {
+        gasLimit: 400000,
+      }
+    );
+  }
+  for (i = 6; i < 21; i++) {
+    await mintBaseExistingErc1155(
+      [toAddress], // To
+      [BigNumber.from(i)], // ID: in order to work this ID must already have been minted!
+      [BigNumber.from("10")], // Desired supply
+      [""], // The "base"
+      {
+        gasLimit: 400000,
+      }
+    );
+  }
   // const balance = await mfw.balanceOf(toAddress, BigNumber.from("1"));
-  // console.log("balance", balance.toNumber());
+  // console.log("Balance", balance.toNumber());
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
