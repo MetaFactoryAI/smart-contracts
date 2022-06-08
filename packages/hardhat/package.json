@@ -30,6 +30,7 @@
     "ethers": "^5.4.6",
     "hardhat": "2.6.8",
     "hardhat-deploy": "^0.8.6",
+    "hardhat-gas-reporter": "^1.0.8",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1",

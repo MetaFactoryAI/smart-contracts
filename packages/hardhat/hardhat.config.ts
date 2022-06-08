@@ -7,6 +7,7 @@ import "hardhat-deploy";
 import "@eth-optimism/hardhat-ovm";
 import "@nomiclabs/hardhat-ethers";
 import '@nomiclabs/hardhat-etherscan';
+import "hardhat-gas-reporter";
 
 export default {
 
@@ -77,4 +78,9 @@ export default {
       goerli: process.env.ETHERSCAN_API_KEY_GOERLI || ''
     },
   },
+  gasReporter: {
+    currency: 'USD',
+    enabled: (process.env.REPORT_GAS) ? true : false,
+    coinmarketcap: (process.env.REPORT_GAS) ? process.env.REPORT_GAS : false,
+  }
 };
