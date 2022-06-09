@@ -6,6 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     from: deployer,
     args: [mfwGiveawayAdmin], 
     log: true,
+    skipIfAlreadyDeployed: true
   });
 };
 module.exports.tags = ["MFWGiveaway"];

@@ -6,8 +6,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     from: deployer,
     args: [],
     log: true,
+    skipIfAlreadyDeployed: true
   });
 
+  // TODO: read first
   await execute(
     'MFW',
     {from: deployer, log: true},
@@ -15,6 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     mfwAdmin,
   );
 
+  // TODO: read first
   // Configure tokenURI for first wearable drop
   await execute(
     'MFW',
