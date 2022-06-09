@@ -80,7 +80,7 @@ export default {
   },
   gasReporter: {
     currency: 'USD',
-    enabled: (process.env.REPORT_GAS) ? true : false,
-    coinmarketcap: (process.env.REPORT_GAS) ? process.env.REPORT_GAS : false,
+    enabled: true,
+    coinmarketcap: (process.env.COINMARKETCAP_API_KEY) ? process.env.COINMARKETCAP_API_KEY : false,
   }
 };
