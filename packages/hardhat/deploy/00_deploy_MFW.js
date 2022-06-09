@@ -1,5 +1,5 @@
 module.exports = async ({ getNamedAccounts, deployments }) => {
-  const { deploy, execute } = deployments;
+  const { deploy, read, execute } = deployments;
   const { deployer, mfwAdmin } = await getNamedAccounts();
 
   await deploy("MFW", {
@@ -9,21 +9,37 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     skipIfAlreadyDeployed: true
   });
 
-  // TODO: read first
-  await execute(
-    'MFW',
-    {from: deployer, log: true},
-    'approveAdmin',
-    mfwAdmin,
-  );
+  let isAdmin = false;
+  try {
+    isAdmin = await read('MFW', 'isAdmin', mfwAdmin);
+  } catch (e) {
+    // no admin
+  }
 
-  // TODO: read first
+  if (!isAdmin) {
+    await execute(
+      'MFW',
+      {from: deployer, log: true},
+      'approveAdmin',
+      mfwAdmin,
+    );
+  }
+  
+
+  // TODO: read functions for baseTokenURI and baseTokenURIExtension
+  // let currentBaseURI;
+  // try {
+  //   currentBaseURI = await read('MFW', 'baseTokenURI');
+  // } catch (e) {
+  // }
+
   // Configure tokenURI for first wearable drop
-  await execute(
-    'MFW',
-    {from: mfwAdmin, log: true},
-    'setBaseTokenURI',
-    "https://mf-services.vercel.app/api/nftMetadata/",
-  );
+  const baseURI = "https://mf-services.vercel.app/api/nftMetadata/";
+    await execute(
+      'MFW',
+      {from: mfwAdmin, log: true},
+      'setBaseTokenURI',
+      baseURI,
+    );
 };
 module.exports.tags = ["MFW", "MWF_deploy"];

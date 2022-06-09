@@ -1,5 +1,5 @@
 module.exports = async ({ getNamedAccounts, deployments }) => {
-  const { deploy, execute } = deployments;
+  const { deploy, read, execute } = deployments;
   const { deployer, mfwAdmin } = await getNamedAccounts();
 
   await deploy("MFWUniques", {
@@ -9,13 +9,21 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     skipIfAlreadyDeployed: true
   });
 
-  // TODO: read first
-  await execute(
-    'MFWUniques',
-    {from: deployer, log: true},
-    'approveAdmin',
-    mfwAdmin,
-  );
+  let isAdmin = false;
+  try {
+    isAdmin = await read('MFWUniques', 'isAdmin', mfwAdmin);
+  } catch (e) {
+    // no admin
+  }
+
+  if (!isAdmin) {
+    await execute(
+      'MFWUniques',
+      {from: deployer, log: true},
+      'approveAdmin',
+      mfwAdmin,
+    );
+  }
 
   // TODO: read first
   // Configure tokenURI for first wearable drop
@@ -26,4 +34,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     "https://mf-services.vercel.app/api/nftMetadata/", // TODO: update baseURI for ERC721s
   );
 };
-module.exports.tags = ["MFW", "MWF_deploy"];
+module.exports.tags = ["MFWU", "MWFU_deploy"];
