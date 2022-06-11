@@ -291,7 +291,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(allClaims[0][0]);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -310,45 +310,45 @@ describe('MFW_Giveaway', function () {
       ).to.be.revertedWith(`ERC1155: insufficient balance for transfer`);
     });
 
-    // it('User cannot claim sand when contract does not hold any', async function () {
-    //   const options = {
-    //     mint: true,
-    //   };
-    //   const setUp = await setupTestGiveaway(options);
-    //   const {
-    //     giveawayContract,
-    //     others,
-    //     allTrees,
-    //     allClaims,
-    //     allMerkleRoots,
-    //   } = setUp;
+    it('User cannot claim ERC20 when contract does not hold any', async function () {
+      const options = {
+        mint: true,
+      };
+      const setUp = await setupTestGiveaway(options);
+      const {
+        giveawayContract,
+        others,
+        allTrees,
+        allClaims,
+        allMerkleRoots,
+      } = setUp;
 
-    //   // make arrays of claims and proofs relevant to specific user
-    //   const userProofs = [];
-    //   const userTrees = [];
-    //   userTrees.push(allTrees[0]);
-    //   const userClaims = [];
-    //   userClaims.push(allClaims[0][0]);
-    //   for (let i = 0; i < userClaims.length; i++) {
-    //     userProofs.push(
-    //       userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
-    //     );
-    //   }
-    //   const userMerkleRoots = [];
-    //   userMerkleRoots.push(allMerkleRoots[0]);
+      // make arrays of claims and proofs relevant to specific user
+      const userProofs = [];
+      const userTrees = [];
+      userTrees.push(allTrees[0]);
+      const userClaims = [];
+      userClaims.push(allClaims[0][0]);
+      for (let i = 0; i < userClaims.length; i++) {
+        userProofs.push(
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
+        );
+      }
+      const userMerkleRoots = [];
+      userMerkleRoots.push(allMerkleRoots[0]);
 
-    //   const giveawayContractAsUser = await giveawayContract.connect(
-    //     ethers.provider.getSigner(others[0])
-    //   );
+      const giveawayContractAsUser = await giveawayContract.connect(
+        ethers.provider.getSigner(others[0])
+      );
 
-    //   await expect(
-    //     giveawayContractAsUser.claimMultipleTokensFromMultipleMerkleTree(
-    //       userMerkleRoots,
-    //       userClaims,
-    //       userProofs
-    //     )
-    //   ).to.be.revertedWith(`not enough fund`);
-    // });
+      await expect(
+        giveawayContractAsUser.claimMultipleTokensFromMultipleMerkleTree(
+          userMerkleRoots,
+          userClaims,
+          userProofs
+        )
+      ).to.be.revertedWith(`not enough fund`);
+    });
 
     it('User can claim allocated multiple tokens from Giveaway contract', async function () {
       const options = {
@@ -373,7 +373,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -406,63 +406,6 @@ describe('MFW_Giveaway', function () {
       );
     });
 
-    it('User can claim allocated 64 tokens from Giveaway contract', async function () {
-      const numberOfWearables = 64;
-      const options = {
-        mint: true,
-        multi: true,
-        numberOfWearables,
-      };
-      const setUp = await setupTestGiveaway(options);
-      const {
-        giveawayContract,
-        others,
-        allTrees,
-        allClaims,
-        mfwContract,
-        allMerkleRoots,
-      } = setUp;
-
-      // make arrays of claims and proofs relevant to specific user
-      const userProofs = [];
-      const userTrees = [];
-      userTrees.push(allTrees[1]);
-      const userClaims = [];
-      const claim = allClaims[1][4];
-      userClaims.push(claim);
-      for (let i = 0; i < userClaims.length; i++) {
-        userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
-        );
-      }
-      const userMerkleRoots = [];
-      userMerkleRoots.push(allMerkleRoots[1]);
-
-      const giveawayContractAsUser = await giveawayContract.connect(
-        ethers.provider.getSigner(others[0])
-      );
-
-      const receipt = await waitFor(
-        giveawayContractAsUser.claimMultipleTokensFromMultipleMerkleTree(
-          userMerkleRoots,
-          userClaims,
-          userProofs
-        )
-      );
-      console.log(
-        'Number of assets:',
-        numberOfWearables,
-        '; Gas used:',
-        receipt.gasUsed.toString()
-      );
-      const event = await expectEventWithArgs(
-        mfwContract,
-        receipt,
-        'TransferBatch'
-      );
-      expect(event.args.ids.length).to.eq(numberOfWearables);
-    });
-
     it('Claimed Event is emitted for successful claim', async function () {
       const options = {
         mint: true,
@@ -485,7 +428,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -550,7 +493,7 @@ describe('MFW_Giveaway', function () {
     //   userClaims.push(claim);
     //   for (let i = 0; i < userClaims.length; i++) {
     //     userProofs.push(
-    //       userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+    //       userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
     //     );
     //   }
     //   const userMerkleRoots = [];
@@ -636,7 +579,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -801,7 +744,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -845,7 +788,7 @@ describe('MFW_Giveaway', function () {
     //   userClaims.push(claim);
     //   for (let i = 0; i < userClaims.length; i++) {
     //     userProofs.push(
-    //       userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+    //       userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
     //     );
     //   }
     //   const userMerkleRoots = [];
@@ -889,7 +832,7 @@ describe('MFW_Giveaway', function () {
     //   userClaims.push(claim);
     //   for (let i = 0; i < userClaims.length; i++) {
     //     userProofs.push(
-    //       userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+    //       userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
     //     );
     //   }
     //   const userMerkleRoots = [];
@@ -933,7 +876,7 @@ describe('MFW_Giveaway', function () {
     //   userClaims.push(claim);
     //   for (let i = 0; i < userClaims.length; i++) {
     //     userProofs.push(
-    //       userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+    //       userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
     //     );
     //   }
     //   const userMerkleRoots = [];
@@ -977,7 +920,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -1024,7 +967,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -1071,7 +1014,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[0].getProof(calculateMultiClaimHash(userClaims[i]))
         );
       }
       const userMerkleRoots = [];
@@ -1110,7 +1053,7 @@ describe('MFW_Giveaway', function () {
       // make arrays of claims and proofs relevant to specific user
       const userProofs = [];
       const userTrees = [];
-      userTrees.push(allTrees[0]);
+      userTrees.push(allTrees[0]); // TODO: only pushing one tree?
       const userClaims = [];
       userClaims.push(allClaims[0][0]);
       for (let i = 0; i < userClaims.length; i++) {
@@ -1151,7 +1094,7 @@ describe('MFW_Giveaway', function () {
     //   // make arrays of claims and proofs relevant to specific user
     //   const userProofs = [];
     //   const userTrees = [];
-    //   userTrees.push(allTrees[0]);
+    //   userTrees.push(allTrees[0]); // TODO: only pushing one tree?
     //   const userClaims = [];
     //   userClaims.push(allClaims[0][0]);
     //   for (let i = 0; i < userClaims.length; i++) {
@@ -1194,7 +1137,7 @@ describe('MFW_Giveaway', function () {
       // make arrays of claims and proofs relevant to specific user
       const userProofs = [];
       const userTrees = [];
-      userTrees.push(allTrees[0]);
+      userTrees.push(allTrees[0]); // TODO: only pushing one tree?
       const userClaims = [];
       const claim = allClaims[0][0];
       userClaims.push(claim);
@@ -1257,7 +1200,7 @@ describe('MFW_Giveaway', function () {
 
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          allTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          allTrees[i].getProof(calculateMultiClaimHash(userClaims[i])) // TODO: check that i is correct for tree
         );
       }
       const userMerkleRoots = [];
@@ -1333,7 +1276,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i])) // TODO: check that i is correct for tree
         );
       }
       const userMerkleRoots = [];
@@ -1377,7 +1320,7 @@ describe('MFW_Giveaway', function () {
       userClaims.push(claim);
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          userTrees[i].getProof(calculateMultiClaimHash(userClaims[i])) // TODO: check that i is correct for tree
         );
       }
       userProofs.push(userProofs[0]); // extra proof
@@ -1422,7 +1365,7 @@ describe('MFW_Giveaway', function () {
 
       for (let i = 0; i < userClaims.length; i++) {
         userProofs.push(
-          allTrees[i].getProof(calculateMultiClaimHash(userClaims[i]))
+          allTrees[i].getProof(calculateMultiClaimHash(userClaims[i])) // TODO: check that i is correct for tree
         );
       }
       const userMerkleRoots = [];

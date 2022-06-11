@@ -11,7 +11,10 @@ import {
   import helpers from '../../lib/merkleTreeHelper';
   import {default as testData0} from '../../data/MFWGiveaway/claims_0_hardhat.json';
   import {default as testData1} from '../../data/MFWGiveaway/claims_1_hardhat.json';
+  import {default as testData2} from '../../data/MFWGiveaway/claims_2_hardhat.json';
+
   import {expectReceiptEventWithArgs, waitFor, withSnapshot} from '../utils';
+import { SocketAddress } from 'net';
   
   const zeroAddress = constants.AddressZero;  
   const {createDataArrayMultiClaim} = helpers;
@@ -19,8 +22,11 @@ import {
   type Options = {
     mint?: boolean; // supply assets and lands to MultiGiveaway
     multi?: boolean; // set up more than one giveaway (ie more than one claim hash)
+
+    // Options below to stress test
     mintSingleAsset?: number; // mint a single asset and add to blank testData for mintSingleAsset number of users
-    numberOfWearables?: number; // specify a given number of different wearable ids to mint and test
+    numberOfWearables?: number; // set up a single claim containing a large number of items (ie many IDs)
+    stress?: number; // stress test number of claims in a dataset, similar to mintSingleAsset but mints everything
     badData?: boolean; // set the merkle tree up with bad contract addresses and input values for ERC1155, ERC721 and ERC20 assets
   };
   
@@ -29,7 +35,7 @@ import {
     async function (hre, options?: Options) {
       const {network, getChainId} = hre;
       const chainId = await getChainId();
-      const {mint, multi, mintSingleAsset, numberOfWearables, badData} =
+      const {mint, multi, mintSingleAsset, numberOfWearables, stress, badData} =
         options || {};
       const {
         deployer,
@@ -115,52 +121,39 @@ import {
   
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let dataSet_1: any = JSON.parse(JSON.stringify(testData1));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let dataSet_2: any = JSON.parse(JSON.stringify(testData2));
   
       // To ensure the same address for others[0] for all tests
       assignReservedAddressToClaim(dataSet_0);
       assignReservedAddressToClaim(dataSet_1);
+      assignReservedAddressToClaim(dataSet_2);
   
       // To ensure the claim data works for all developers
       assignTestContractAddressesToClaim(dataSet_0);
       assignTestContractAddressesToClaim(dataSet_1);
+      assignTestContractAddressesToClaim(dataSet_2);
+
+      // Extend the number of claims in the dataSet
+      if (numberOfWearables) {
+        if (stress) {
+          const claimToReplicate = dataSet_2[0];
+          // stress is the total number of claims in the file hence we subtract 1
+          for (let i=0; i<stress -1; i++){
+            dataSet_2.push(claimToReplicate);
+          }
+        }
+      }
   
       if (mint) {
         await mintTestWearables(1, 6, 5); // ids 1 to 6 dataSet_0
         if (multi) {
           await mintTestWearables(7, 20, 5); // ids 7 to 20 dataSet_1
         }
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async function setAssets(dataSet: any, numberOfWearables: number) {
-        const newClaim: any = {
-          "to": others[0],
-          "erc1155": [{
-            "contractAddress": mfwContract.address,
-            "ids": [],
-            "values": []
-          }],
-          "erc721": [],
-          "erc20": {
-            "contractAddresses": [],
-            "amounts": []
-          }
-        };
-        
-        let newWearables = 0;
-        for (let id = 21; id <= 21 + numberOfWearables - 1; id++) {
-          newClaim.erc1155[0].ids[newWearables] = id;
-          newClaim.erc1155[0].values[newWearables] = 5;
-          newWearables +=1;
+        if (numberOfWearables) {
+          await mintTestWearables(21, 21 + numberOfWearables - 1, stress ? 5*stress : 5); // ids 21 to [x] dataSet_2
         }
-        dataSet.push(newClaim)
-        await mintTestWearables(21, 21 + numberOfWearables -1, 5) // TODO: fix failing test
-      }
-
-      if (numberOfWearables) {
-        // mint option must be true
-        // multi option must be true
-        setAssets(dataSet_1, numberOfWearables);
       }
   
       if (mintSingleAsset) {
@@ -261,6 +254,27 @@ import {
           '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
         ); // no expiry
       }
+
+      // For large number of wearables per claim
+      if (numberOfWearables) {
+        const {
+          claims: claims2,
+          merkleRootHash: merkleRootHash2,
+        } = createClaimMerkleTree(
+          network.live,
+          chainId,
+          dataSet_2,
+          'TestMFWGiveaway'
+        );
+        allClaims.push(claims2);
+        allMerkleRoots.push(merkleRootHash2);
+        const hashArray2 = createDataArrayMultiClaim(claims2);
+        allTrees.push(new MerkleTree(hashArray2));
+        await giveawayContractAsAdmin.addNewGiveaway(
+          merkleRootHash2,
+          '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+        ); // no expiry
+      }
   
       // Set up bad contract addresses and input amounts in merkle tree data and claim
       if (badData) {
@@ -295,6 +309,7 @@ import {
         allClaims,
         allMerkleRoots,
         mfwGiveawayAdmin,
+        hre
       };
     }
   );

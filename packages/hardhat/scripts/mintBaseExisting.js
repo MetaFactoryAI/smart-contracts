@@ -17,7 +17,7 @@ const main = async () => {
 
   // generate dummy NFTs for an existing ID and base and give to toAddress
 
-  for (i = 1; i < 6; i++) {
+  for (i = 1; i < 21; i++) {
     await mintBaseExistingErc1155(
       [toAddress], // To
       [BigNumber.from(i)], // ID: in order to work this ID must already have been minted!
@@ -28,17 +28,7 @@ const main = async () => {
       }
     );
   }
-  for (i = 6; i < 21; i++) {
-    await mintBaseExistingErc1155(
-      [toAddress], // To
-      [BigNumber.from(i)], // ID: in order to work this ID must already have been minted!
-      [BigNumber.from("10")], // Desired supply
-      [""], // The "base"
-      {
-        gasLimit: 400000,
-      }
-    );
-  }
+
   // const balance = await mfw.balanceOf(toAddress, BigNumber.from("1"));
   // console.log("Balance", balance.toNumber());
 
