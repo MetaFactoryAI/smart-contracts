@@ -1091,6 +1091,59 @@ describe('MFW_Giveaway_ERC1155', function () {
         )
       ).to.be.revertedWith(`DESTINATION_ALREADY_CLAIMED`);
     });
+
+    it('User cannot claim more than once with same leaf (replay)', async function () {
+      const options = {
+        mint: true,
+        sand: true,
+        multi: true,
+      };
+      const setUp = await setupTestGiveaway(options);
+      const {
+        giveawayContract,
+        others,
+        allTrees,
+        allClaims,
+        allMerkleRoots,
+      } = setUp;
+
+      // make arrays of claims and proofs relevant to specific user
+      const userProofs = [];
+      const userClaims = [];
+      const claim = allClaims[0][0];
+      const secondClaim = allClaims[1][0];
+      userClaims.push(claim);
+      userClaims.push(secondClaim);
+
+      for (let i = 0; i < userClaims.length; i++) {
+        userProofs.push(
+          allTrees[i].getProof(calculateMultiClaimHash(userClaims[i])) // Note: can increment i like this because 1 claim per tree
+        );
+      }
+      const userMerkleRoots = [];
+      userMerkleRoots.push(allMerkleRoots[0]);
+      userMerkleRoots.push(allMerkleRoots[1]);
+
+      const giveawayContractAsUser = await giveawayContract.connect(
+        ethers.provider.getSigner(others[0])
+      );
+
+      await waitFor(
+        giveawayContractAsUser.claimMultipleTokens(
+          userMerkleRoots[0],
+          userClaims[0],
+          userProofs[0]
+        )
+      );
+
+      await expect(
+        giveawayContractAsUser.claimMultipleTokens(
+          userMerkleRoots[1], // a different legitimate merkleroot
+          userClaims[0], // same claim as above
+          userProofs[1] // a different legitimate proof
+        )
+      ).to.be.revertedWith(`LEAF_ALREADY_CLAIMED`);
+    });
   });
 
   // User can claim multiple token types for a given merkle root hash
@@ -1223,7 +1276,7 @@ describe('MFW_Giveaway_ERC1155', function () {
       expect(claimedEvent.args[4]).to.equal(merkleRoot)
     });
 
-    it('User cannot claim more than once', async function () {
+    it('User cannot claim for the same merkleroot more than once', async function () {
       const options = {
         mint: true,
         sand: true,

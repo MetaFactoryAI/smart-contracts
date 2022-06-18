@@ -15,6 +15,7 @@ contract MFWGiveaway is AccessControl, ClaimERC1155ERC721ERC20 {
     bytes4 internal constant ERC721_BATCH_RECEIVED = 0x4b808c46;
 
     mapping(address => mapping(bytes32 => bool)) public claimed;
+    mapping(address => mapping(bytes32 => bool)) public leaves;
     mapping(bytes32 => uint256) internal _expiryTime;
 
     event NewGiveaway(bytes32 merkleRoot, uint256 expiryTime);
@@ -51,6 +52,7 @@ contract MFWGiveaway is AccessControl, ClaimERC1155ERC721ERC20 {
         Claim[] memory claims,
         bytes32[][] calldata proofs
     ) external {
+        require(claims.length < 5, "TOO_MANY_CLAIMS");
         require(claims.length == rootHashes.length, "INVALID_INPUT");
         require(claims.length == proofs.length, "INVALID_INPUT");
         for (uint256 i = 0; i < rootHashes.length; i++) {
@@ -74,6 +76,9 @@ contract MFWGiveaway is AccessControl, ClaimERC1155ERC721ERC20 {
         require(block.timestamp < giveawayExpiryTime, "CLAIM_PERIOD_IS_OVER");
         require(claimed[claim.to][merkleRoot] == false, "DESTINATION_ALREADY_CLAIMED");
         claimed[claim.to][merkleRoot] = true;
+        bytes32 merkleLeaf = keccak256(abi.encode(claim));
+        require(leaves[claim.to][merkleLeaf] == false, "LEAF_ALREADY_CLAIMED");
+        leaves[claim.to][merkleLeaf] = true;
         _claimERC1155ERC721ERC20(merkleRoot, claim, proof);
     }
 
