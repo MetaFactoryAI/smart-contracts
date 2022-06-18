@@ -1,3 +1,5 @@
+const {HARDHAT_NETWORK_NAME} = require('hardhat/plugins');
+
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, read, execute } = deployments;
   const { deployer, mfwAdmin } = await getNamedAccounts();
@@ -34,3 +36,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   );
 };
 module.exports.tags = ["MFWUniques", "MWFUniques_deploy"];
+module.exports.skip = (hre) => {
+  return hre.network.name !== HARDHAT_NETWORK_NAME
+};
