@@ -25,14 +25,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     );
   }
   
-
-  // TODO: read functions for baseTokenURI and baseTokenURIExtension
-  // let currentBaseURI;
-  // try {
-  //   currentBaseURI = await read('MFW', 'baseTokenURI');
-  // } catch (e) {
-  // }
-
   // Configure tokenURI for first wearable drop
   const baseURI = "https://mf-services.vercel.app/api/nftMetadata/";
     await execute(
