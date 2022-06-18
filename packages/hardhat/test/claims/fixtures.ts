@@ -75,10 +75,6 @@ import {
 
       // ** Special Mint functions from Manifold contracts ** ----------------------------------
 
-      // Not currently used for tests
-      // const mintBaseExistingErc1155 = async (toArray: string[], id: number, amountArray: BigNumber[], uriArray: string[]) =>
-      // mfwContractAsAdmin.mintBaseNew(toArray, id, amountArray, uriArray);
-
       const mintBaseNewErc1155 = async (toArray: string[], amountArray: BigNumber[], uriArray: string[]) =>
       mfwContractAsAdmin.mintBaseNew(toArray, amountArray, uriArray);
 
