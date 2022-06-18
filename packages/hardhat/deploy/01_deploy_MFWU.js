@@ -25,7 +25,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     );
   }
 
-  // TODO: read first
   // Configure tokenURI for first wearable drop
   await execute(
     'MFWUniques',
@@ -34,4 +33,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     "https://mf-services.vercel.app/api/nftMetadata/", // TODO: update baseURI for ERC721s
   );
 };
-module.exports.tags = ["MFWU", "MWFU_deploy"];
+module.exports.tags = ["MFWUniques", "MWFUniques_deploy"];
