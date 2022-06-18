@@ -5,7 +5,6 @@ import {
     getUnnamedAccounts,
   } from 'hardhat';
   import {BigNumber, constants} from 'ethers';
-  import {expect} from '../../chai-setup';
   import MerkleTree from '../../lib/merkleTree';
   import {createClaimMerkleTree} from '../../data/getClaims';
   import helpers from '../../lib/merkleTreeHelper';
@@ -13,29 +12,27 @@ import {
   import {default as testData1} from '../../data/MFWGiveaway/claims_1_hardhat.json';
   import {default as testData2} from '../../data/MFWGiveaway/claims_2_hardhat.json';
 
-  import {expectReceiptEventWithArgs, waitFor, withSnapshot} from '../utils';
-import { SocketAddress } from 'net';
+  import {withSnapshot} from '../utils';
   
   const zeroAddress = constants.AddressZero;  
   const {createDataArrayMultiClaim} = helpers;
   
   type Options = {
-    mint?: boolean; // supply assets and lands to MultiGiveaway
+    mint?: boolean; // supply tokens to claims contract
     multi?: boolean; // set up more than one giveaway (ie more than one claim hash)
 
     // Options below to stress test
-    mintSingleAsset?: number; // mint a single asset and add to blank testData for mintSingleAsset number of users
     numberOfWearables?: number; // set up a single claim containing a large number of items (ie many IDs)
-    stress?: number; // stress test number of claims in a dataset, similar to mintSingleAsset but mints everything
+    stress?: number; // stress test number of claims in a dataset and mint everything
     badData?: boolean; // set the merkle tree up with bad contract addresses and input values for ERC1155, ERC721 and ERC20 assets
   };
   
   export const setupTestGiveaway = withSnapshot(
-    ['MFWGiveaway', 'MFW'],
+    ['MFWGiveaway', 'MFW', 'MFWUniques'],
     async function (hre, options?: Options) {
       const {network, getChainId} = hre;
       const chainId = await getChainId();
-      const {mint, multi, mintSingleAsset, numberOfWearables, stress, badData} =
+      const {mint, multi, numberOfWearables, stress, badData} =
         options || {};
       const {
         deployer,
@@ -60,22 +57,32 @@ import { SocketAddress } from 'net';
         mfwGiveawayAdmin
       );
 
-      // Wearable contract
+      // Wearable contract ERC1155
       const mfwContract = await ethers.getContract('MFW', deployer);
       await mfwContract.approveAdmin(mfwAdmin);
       const mfwContractAsAdmin = await mfwContract.connect(
         ethers.provider.getSigner(mfwAdmin)
       );
 
-      await mfwContractAsAdmin.setBaseTokenURI("testWearableBaseTokenUri") 
-      // TODO: uri tests
+      // Wearable contract ERC721
+      const mfwuContract = await ethers.getContract('MFWUniques', deployer);
+      await mfwuContract.approveAdmin(mfwAdmin);
+      const mfwuContractAsAdmin = await mfwContract.connect(
+        ethers.provider.getSigner(mfwAdmin)
+      );
 
-      // TODO: mintBaseExisting tests
-      const mintBaseExistingErc1155 = async (toArray: string[], id: number, amountArray: BigNumber[], uriArray: string[]) =>
-      mfwContractAsAdmin.mintBaseNew(toArray, id, amountArray, uriArray);
+      await mfwContractAsAdmin.setBaseTokenURI("testWearableBaseTokenUriERC721")
+
+      // ** Special Mint functions from Manifold contracts ** ----------------------------------
+
+      // Not currently used for tests
+      // const mintBaseExistingErc1155 = async (toArray: string[], id: number, amountArray: BigNumber[], uriArray: string[]) =>
+      // mfwContractAsAdmin.mintBaseNew(toArray, id, amountArray, uriArray);
 
       const mintBaseNewErc1155 = async (toArray: string[], amountArray: BigNumber[], uriArray: string[]) =>
       mfwContractAsAdmin.mintBaseNew(toArray, amountArray, uriArray);
+
+      // ---------------------------------------------------------------------------------------
   
       // Supply MFW to contract for testing 
       let counter = 0;
@@ -154,60 +161,6 @@ import { SocketAddress } from 'net';
         if (numberOfWearables) {
           await mintTestWearables(21, 21 + numberOfWearables - 1, stress ? 5*stress : 5); // ids 21 to [x] dataSet_2
         }
-      }
-  
-      if (mintSingleAsset) {
-        // Create data for a single wearable
-        // mint option must be false
-        // multi option must be false
-        // Set up blank testData for thousands of users and add to data
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const emptyData: any = [];
-        for (let i = 0; i < 1; i++) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const claim: any = {
-            to: others[0],
-            erc1155: [
-              {
-                ids: ["1"], // id 1
-                values: [1],
-                contractAddress: mfwContract.address,
-              },
-            ],
-            erc721: [
-              
-            ],
-            erc20: {
-              amounts: [],
-              contractAddresses: [],
-            },
-          };
-          emptyData.push(claim);
-        }
-        for (let i = 1; i < mintSingleAsset; i++) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const claim: any = {
-            to: others[0],
-            erc1155: [
-              {
-                ids: [i],
-                values: [1],
-                contractAddress: mfwContract.address,
-              },
-            ],
-            erc721: [
-              ,
-            ],
-            erc20: {
-              amounts: [],
-              contractAddresses: [],
-            },
-          };
-          emptyData.push(claim);
-        }
-        dataSet_0 = emptyData;
-        // mint the single wearable and set the owner as the giveaway contract
-        await mintTestWearables(1, 2, 5)
       }
   
       // Set up tree with test assets for each applicable giveaway
@@ -304,6 +257,7 @@ import { SocketAddress } from 'net';
         giveawayContract,
         giveawayContractAsAdmin,
         mfwContract,
+        mfwuContract,
         others,
         allTrees,
         allClaims,
