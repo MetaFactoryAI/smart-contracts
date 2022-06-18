@@ -1,26 +1,34 @@
 # :robot: Wearable NFT claims
-MetaFactory repo for wearable smartcontracts and claims.
-It leverages:
+
+MetaFactory repo for wearables smart contracts and claims. It leverages:
+
 - Scaffold-eth
 - The Sandbox Game's MultiGiveaway contract
-- Manifold's base NFT structure, see https://github.com/manifoldxyz/creator-core-solidity 
+- Manifold's base NFT structure, see <https://github.com/manifoldxyz/creator-core-solidity>
 
 ## Dev quickstart
+
 Local dev full-stack quickstart:
-```yarn chain```
-```yarn start```
-```yarn deploy```
-```yarn remove-graph-node``` ```yarn run-graph-node```
-```yarn graph-codegen```
-```yarn graph-build```
-```yarn graph-create-local```
-```yarn graph-deploy-local```
-```yarn mint```
+
+```
+yarn chain
+yarn start
+yarn deploy
+yarn remove-graph-node
+yarn run-graph-node
+yarn graph-codegen
+yarn graph-build
+yarn graph-create-local
+yarn graph-deploy-local
+yarn mint
+```
 
 ## About Scaffold-eth
-Scaffold-eth provides an out-of-the-shelf stack for rapid prototyping on Ethereum, giving developers access to state-of-the-art tools to quickly learn and ship an Ethereum-based dApp. 
+
+Scaffold-eth provides an out-of-the-shelf stack for rapid prototyping on Ethereum, giving developers access to state-of-the-art tools to quickly learn and ship an Ethereum-based dApp. See <https://github.com/scaffold-eth/scaffold-eth>.
 
 ## The Scaffold-eth stack
+
 Scaffold-eth is not a product itself but more of a combination or stack of other great products. It allows you to quickly build and iterate over your smart contracts and frontends. It leverages:
 
 - Hardhat for running local networks, deploying and testing smart contracts.
