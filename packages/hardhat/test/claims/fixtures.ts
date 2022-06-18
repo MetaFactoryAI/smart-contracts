@@ -11,6 +11,9 @@ import {
   import {default as testData0} from '../../data/MFWGiveaway/claims_0_hardhat.json';
   import {default as testData1} from '../../data/MFWGiveaway/claims_1_hardhat.json';
   import {default as testData2} from '../../data/MFWGiveaway/claims_2_hardhat.json';
+  import {default as testData3} from '../../data/MFWGiveaway/claims_3_hardhat.json';
+  import {default as testData4} from '../../data/MFWGiveaway/claims_4_hardhat.json';
+  import {default as testData5} from '../../data/MFWGiveaway/claims_5_hardhat.json';
 
   import {withSnapshot} from '../utils';
   
@@ -127,16 +130,31 @@ import {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let dataSet_2: any = JSON.parse(JSON.stringify(testData2));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let dataSet_3: any = JSON.parse(JSON.stringify(testData3));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let dataSet_4: any = JSON.parse(JSON.stringify(testData4));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let dataSet_5: any = JSON.parse(JSON.stringify(testData5));
   
       // To ensure the same address for others[0] for all tests
       assignReservedAddressToClaim(dataSet_0);
       assignReservedAddressToClaim(dataSet_1);
       assignReservedAddressToClaim(dataSet_2);
+      assignReservedAddressToClaim(dataSet_3);
+      assignReservedAddressToClaim(dataSet_4);
+      assignReservedAddressToClaim(dataSet_5);
   
       // To ensure the claim data works for all developers
       assignTestContractAddressesToClaim(dataSet_0);
       assignTestContractAddressesToClaim(dataSet_1);
       assignTestContractAddressesToClaim(dataSet_2);
+      assignTestContractAddressesToClaim(dataSet_3);
+      assignTestContractAddressesToClaim(dataSet_4);
+      assignTestContractAddressesToClaim(dataSet_5);
 
       // Extend the number of claims in the dataSet
       if (numberOfWearables) {
@@ -152,7 +170,7 @@ import {
       if (mint) {
         await mintTestWearables(1, 6, 5); // ids 1 to 6 dataSet_0
         if (multi) {
-          await mintTestWearables(7, 20, 5); // ids 7 to 20 dataSet_1
+          await mintTestWearables(7, 84, 40); // ids 7 to 20 dataSet_1
         }
         if (numberOfWearables) {
           await mintTestWearables(21, 21 + numberOfWearables - 1, stress ? 5*stress : 5); // ids 21 to [x] dataSet_2
@@ -175,13 +193,13 @@ import {
       const allTrees = [];
   
       // Single giveaway
-      const hashArray = createDataArrayMultiClaim(claims0);
+      const hashArray0 = createDataArrayMultiClaim(claims0);
       await giveawayContractAsAdmin.addNewGiveaway(
         merkleRootHash0,
         '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
       ); // no expiry
       allMerkleRoots.push(merkleRootHash0);
-      allTrees.push(new MerkleTree(hashArray));
+      allTrees.push(new MerkleTree(hashArray0));
       
       // Multi giveaway
       if (multi) {
@@ -196,16 +214,14 @@ import {
         );
         allClaims.push(claims1);
         allMerkleRoots.push(merkleRootHash1);
-        const hashArray2 = createDataArrayMultiClaim(claims1);
-        allTrees.push(new MerkleTree(hashArray2));
+        const hashArray1 = createDataArrayMultiClaim(claims1);
+        allTrees.push(new MerkleTree(hashArray1));
         await giveawayContractAsAdmin.addNewGiveaway(
           merkleRootHash1,
           '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
         ); // no expiry
-      }
 
-      // For large number of wearables per claim
-      if (numberOfWearables) {
+        // Add datasets to create more merkleroots below --------------------------
         const {
           claims: claims2,
           merkleRootHash: merkleRootHash2,
@@ -221,6 +237,82 @@ import {
         allTrees.push(new MerkleTree(hashArray2));
         await giveawayContractAsAdmin.addNewGiveaway(
           merkleRootHash2,
+          '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+        ); // no expiry
+
+        const {
+          claims: claims3,
+          merkleRootHash: merkleRootHash3,
+        } = createClaimMerkleTree(
+          network.live,
+          chainId,
+          dataSet_3,
+          'TestMFWGiveaway'
+        );
+        allClaims.push(claims3);
+        allMerkleRoots.push(merkleRootHash3);
+        const hashArray3 = createDataArrayMultiClaim(claims3);
+        allTrees.push(new MerkleTree(hashArray3));
+        await giveawayContractAsAdmin.addNewGiveaway(
+          merkleRootHash3,
+          '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+        ); // no expiry
+
+        const {
+          claims: claims4,
+          merkleRootHash: merkleRootHash4,
+        } = createClaimMerkleTree(
+          network.live,
+          chainId,
+          dataSet_4,
+          'TestMFWGiveaway'
+        );
+        allClaims.push(claims4);
+        allMerkleRoots.push(merkleRootHash4);
+        const hashArray4 = createDataArrayMultiClaim(claims4);
+        allTrees.push(new MerkleTree(hashArray4));
+        await giveawayContractAsAdmin.addNewGiveaway(
+          merkleRootHash4,
+          '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+        ); // no expiry
+
+        const {
+          claims: claims5,
+          merkleRootHash: merkleRootHash5,
+        } = createClaimMerkleTree(
+          network.live,
+          chainId,
+          dataSet_5,
+          'TestMFWGiveaway'
+        );
+        allClaims.push(claims5);
+        allMerkleRoots.push(merkleRootHash5);
+        const hashArray5 = createDataArrayMultiClaim(claims5);
+        allTrees.push(new MerkleTree(hashArray5));
+        await giveawayContractAsAdmin.addNewGiveaway(
+          merkleRootHash5,
+          '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+        ); // no expiry
+        // ---------------------------------------------------------------------------
+      }
+
+      // For large number of wearables per claim
+      if (numberOfWearables) {
+        const {
+          claims: claims6,
+          merkleRootHash: merkleRootHash6,
+        } = createClaimMerkleTree(
+          network.live,
+          chainId,
+          dataSet_2,
+          'TestMFWGiveaway'
+        );
+        allClaims.push(claims6);
+        allMerkleRoots.push(merkleRootHash6);
+        const hashArray2 = createDataArrayMultiClaim(claims6);
+        allTrees.push(new MerkleTree(hashArray2));
+        await giveawayContractAsAdmin.addNewGiveaway(
+          merkleRootHash6,
           '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
         ); // no expiry
       }

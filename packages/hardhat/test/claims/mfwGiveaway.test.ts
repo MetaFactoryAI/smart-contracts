@@ -140,7 +140,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('Claimed status is correctly updated after allocated tokens are claimed - 1 claim of 2 claimed', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -370,7 +369,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('Claimed Event is emitted for successful claim', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -435,7 +433,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim more than once', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -482,7 +479,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim from Giveaway contract if destination is not the reserved address', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -521,7 +517,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim from Giveaway contract to destination zeroAddress', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -560,7 +555,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim from Giveaway contract to destination MFWGiveaway contract address', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -643,7 +637,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim from Giveaway if ERC1155 values array length does not match ids array length', async function () {
       const options = {
         mint: true,
-        sand: true,
         badData: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -687,7 +680,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim after the expiryTime', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -737,7 +729,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim if expiryTime is 0', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -824,7 +815,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User can claim allocated multiple tokens from Giveaway contract - multiple giveaways, 1 claim', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -880,7 +870,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User can claim allocated multiple tokens from Giveaway contract - multiple giveaways, 2 claims', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -901,11 +890,14 @@ describe('MFW_Giveaway_ERC1155', function () {
       userClaims.push(claim);
       userClaims.push(secondClaim);
 
-      for (let i = 0; i < userClaims.length; i++) {
+      
         userProofs.push(
-          allTrees[i].getProof(calculateMultiClaimHash(userClaims[i])) // Note: can increment i like this because 1 claim per tree
+          allTrees[0].getProof(calculateMultiClaimHash(userClaims[0])) 
         );
-      }
+        userProofs.push(
+          allTrees[1].getProof(calculateMultiClaimHash(userClaims[1])) 
+        );
+     
       const userMerkleRoots = [];
       userMerkleRoots.push(allMerkleRoots[0]);
       userMerkleRoots.push(allMerkleRoots[1]);
@@ -916,19 +908,21 @@ describe('MFW_Giveaway_ERC1155', function () {
 
       // Claim 1
 
-      await testInitialERC1155Balances(
-        claim,
-        mfwContract,
-        giveawayContract
-      );
+      for (let i = 0; i < 3; i++) {
+        const initBalanceId = await mfwContract[
+          'balanceOf(address,uint256)'
+        ](giveawayContract.address, claim.erc1155[0].ids[i]);
+        expect(initBalanceId).to.equal(BigNumber.from(5));
+      }
 
       // Claim 2
 
-      await testInitialERC1155Balances(
-        secondClaim,
-        mfwContract,
-        giveawayContract
-      );
+      for (let i = 0; i < 3; i++) {
+        const initBalanceId = await mfwContract[
+          'balanceOf(address,uint256)'
+        ](giveawayContract.address, secondClaim.erc1155[0].ids[i]);
+        expect(initBalanceId).to.equal(BigNumber.from(40));
+      }
 
       await waitFor(
         giveawayContractAsUser.claimMultipleTokensFromMultipleMerkleTree(
@@ -958,7 +952,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim from Giveaway contract if the claims array length does not match merkle root array length', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -1000,7 +993,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim from Giveaway contract if the claims array length does not match proofs array length', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -1042,7 +1034,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim allocated tokens from Giveaway contract more than once - multiple giveaways, 2 claims', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -1095,7 +1086,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim more than once with same leaf (replay)', async function () {
       const options = {
         mint: true,
-        sand: true,
         multi: true,
       };
       const setUp = await setupTestGiveaway(options);
@@ -1176,7 +1166,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User can claim allocated multiple tokens from Giveaway contract', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -1217,7 +1206,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('Claimed Event is emitted for successful claim', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
@@ -1279,7 +1267,6 @@ describe('MFW_Giveaway_ERC1155', function () {
     it('User cannot claim for the same merkleroot more than once', async function () {
       const options = {
         mint: true,
-        sand: true,
       };
       const setUp = await setupTestGiveaway(options);
       const {
