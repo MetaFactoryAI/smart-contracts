@@ -19,7 +19,6 @@ export default {
       url: node_url('rinkeby'),
       accounts: accounts('rinkeby'),
       tags: ['testnet'],
-      // TODO: gasPrice if need to redeploy MFW
     },
     mainnet: {
       url: node_url('mainnet'),
@@ -60,15 +59,18 @@ export default {
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
-      rinkeby: 0
+      rinkeby: 0,
+      mainnet: "0x7019523F9f04C4F4e084c39be1049718d48Ee833"
     },
     mfwAdmin: {
       default: 1, // here this will by default take the second account as mfwAdmin
-      rinkeby: 1
+      rinkeby: 1,
+      mainnet: "0x7019523F9f04C4F4e084c39be1049718d48Ee833"
     },
     mfwGiveawayAdmin: {
       default: 2, // here this will by default take the second account as mfwGiveawayAdmin
-      rinkeby: 2
+      rinkeby: 2,
+      mainnet: "0x7019523F9f04C4F4e084c39be1049718d48Ee833"
     },
   },
   etherscan: {
