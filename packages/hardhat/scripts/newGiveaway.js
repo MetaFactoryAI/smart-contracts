@@ -11,7 +11,7 @@ const hre = require('hardhat');
  const { calculateMultiClaimHash } = helpers.default;
 
 const claimContract = "MFWGiveaway"; // the name of the directory in data/ as well as the name of the contract
-const claimFile = "DemoGiveawayRinkeby2"; // TODO: the name of the claim file in data/
+const claimFile = "TestGiveawayRinkeby"; // TODO: the name of the claim file in data/
 
  const func = async function () {
    const {deployments, network, getChainId, getNamedAccounts} = hre;
@@ -98,4 +98,4 @@ const claimFile = "DemoGiveawayRinkeby2"; // TODO: the name of the claim file in
  }
 
 // Etherscan example:
-// ["0x0853D03e42d3E14D29E9c1f30fdd8aC17DC4E335",[[["1","2","5"],["4","1","2"],"0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94"]],[],[[],[]],"0xd56aaf4b796013dac305532b7c5961504a34447f7d69a9e16ecc04ffc8d99bc3"]
+// ["0x0853D03e42d3E14D29E9c1f30fdd8aC17DC4E335",[[["1","2","5"],["4","1","2"],"0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7"]],[],[[],[]],"0xd56aaf4b796013dac305532b7c5961504a34447f7d69a9e16ecc04ffc8d99bc3"]

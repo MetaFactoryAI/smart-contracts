@@ -22,7 +22,7 @@ const main = async () => {
   const chainId = await getChainId();
 
   // TODO: confirm destination for minting
-  const toAddress = "0x08749a19797531979654D8384112353c7F046aC5"; // Rinkeby giveaway contract
+  const toAddress = "0x8B07fa6767F33f6bC224a1F0d51BA4DE360480Aa"; // Rinkeby giveaway contract
 
   // Gather IDs to mint
   // const response = await axios.get("https://mf-services.vercel.app/api/nftMetadata/");
@@ -47,10 +47,10 @@ const main = async () => {
     mfw.mintBaseNew(toArray, amountArray, uriArray);
 
   const idsMinted = [];
-  for (i = 0; i < 95 /*uniqueIds.length*/; i++) {
+  for (i = 0; i < 5 /*uniqueIds.length*/; i++) {
     const tx = await mintBaseNewErc1155(
       [toAddress], // To
-      [BigNumber.from("10")], // supply
+      [BigNumber.from("5")], // supply
       [""], // uri
       {
         gasLimit: 400000,
