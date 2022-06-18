@@ -10,4 +10,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
 };
 module.exports.tags = ["MFWGiveaway"];
-module.exports.dependencies = ["MFW_deploy", "MFWU_deploy"];
+module.exports.dependencies = ["MFW_deploy"];
