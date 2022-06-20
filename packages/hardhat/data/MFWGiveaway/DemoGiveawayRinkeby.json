@@ -2,7 +2,7 @@
   {
     "to": "0x8205d352E13Db52A124dB78329c35773Ef3A26E0",
     "erc1155": [{
-      "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+      "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
       "ids": ["1", "16", "3", "18"],
       "values": [1, 1, 1, 1]
     }],
@@ -15,7 +15,7 @@
   {
       "to": "0x9C2A50BC7b72850d1E96AB0dEF312C369AA9ce19",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["9", "12", "13", "15", "17"],
         "values": [1,1,2,5,1]
       }],
@@ -28,7 +28,7 @@
     {
       "to": "0xfacef700458d4fc9746f7f3e0d37b462711ff09e",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["9", "12", "13", "15", "17"],
         "values": [1,1,2,5,1]
       }],
@@ -41,7 +41,7 @@
     {
       "to": "0xE75304fE5bb590B6deA3CA13A8aBAb257c12E753",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["5", "7", "8", "9", "10", "11", "14"],
         "values": [1,1,1,1,1,1,1]
       }],
@@ -54,7 +54,7 @@
     {
       "to": "0x8f942eced007bd3976927b7958b50df126feecb5",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["5", "7", "8", "9", "10", "11", "14"],
         "values": [1,1,1,1,1,1,1]
       }],
@@ -67,7 +67,7 @@
     {
       "to": "0x58e2b4d76f66f2e71d1db865c4f4c8e9adcc13c0",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["2", "4", "6", "8"],
         "values": [1, 1, 2, 1]
       }],
@@ -80,7 +80,7 @@
     {
       "to": "0x30b4a5477314e3FbD0C22D6Afcd71EeCF4d9D22F",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["1", "3", "5", "7"],
         "values": [1, 1, 2, 4]
       }],
@@ -93,7 +93,7 @@
     {
       "to": "0x670a6eb62f5146d4b3b40c7b58aa31d175e3d6fb",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["2", "4", "6", "8"],
         "values": [2, 1, 1, 1]
       }],
@@ -106,7 +106,7 @@
     {
       "to": "0x9bcdc7db2f57b0f960a737ccc29373a9bc760134",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["1", "5", "9", "13"],
         "values": [1, 1, 1, 1]
       }],
@@ -119,7 +119,7 @@
     {
       "to": "0xf8049c8425f9eab4e2ae9e1d950f9d3f71481882",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["1", "2", "3", "4"],
         "values": [1, 1, 1, 1]
       }],
@@ -132,7 +132,7 @@
     {
       "to": "0x4cca9821c246acd39a42f34e6ae4e520a8224565",
       "erc1155": [{
-        "contractAddress": "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
+        "contractAddress": "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
         "ids": ["2", "6", "10", "14", "19", "20", "21"],
         "values": [1, 1, 1, 1, 1, 1, 1]
       }],
