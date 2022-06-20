@@ -6,7 +6,7 @@ const delayMS = 1000;
 
 const main = async () => {
   const { deployer } = await getNamedAccounts();
-  const toAddress = "0x08749a19797531979654D8384112353c7F046aC5"; // Rinkeby giveaway contract
+  const toAddress = "0x8B07fa6767F33f6bC224a1F0d51BA4DE360480Aa"; // Rinkeby giveaway contract
 
   console.log("\n\n 🎫 Minting to base existing " + toAddress + "...\n");
   const mfw = await ethers.getContract("MFW", deployer);
@@ -17,7 +17,7 @@ const main = async () => {
 
   // generate dummy NFTs for an existing ID and base and give to toAddress
 
-  for (i = 1; i < 21; i++) {
+  for (i = 1; i < 6; i++) {
     await mintBaseExistingErc1155(
       [toAddress], // To
       [BigNumber.from(i)], // ID: in order to work this ID must already have been minted!

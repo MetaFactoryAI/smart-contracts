@@ -1,16 +1,7 @@
 const { ethers, getNamedAccounts } = require("hardhat");
-const axios = require('axios').default;
 const fs = require("fs");
-const {expect} = require('../chai-setup');
-
-const {
-  waitFor,
-  expectReceiptEventWithArgs,
-  expectEventWithArgs,
-  increaseTime,
-} = require('../test/utils');
-
 const { BigNumber } = ethers;
+const rawDataFile = JSON.parse(fs.readFileSync('./data/MFWGiveaway/DemoGiveawayRinkeby.json')); // TODO: update input file
 
 const delayMS = 1000;
 
@@ -24,33 +15,42 @@ const main = async () => {
   // TODO: confirm destination for minting
   const toAddress = "0x8B07fa6767F33f6bC224a1F0d51BA4DE360480Aa"; // Rinkeby giveaway contract
 
-  // Gather IDs to mint
-  // const response = await axios.get("https://mf-services.vercel.app/api/nftMetadata/");
-  // const wearableData = response.data;
-  // const idsUnfiltered = [];
-  // const supply = [];
-  // for (let i = 0; i < 95 /*wearableData.length*/; i++) {
-  //   idsUnfiltered.push(wearableData[i]);
-  //   // TODO: supplies
-  // }
-  
-  // const uniqueIds = [ ... new Set(idsUnfiltered.map(id => id.nft_token_id))];
-  // uniqueIds.sort();
+  // Gather IDs to mint from input file -----------------------------------------------------------
 
-  // // console.log("\n\n 🤖 New IDs to be minted " +uniqueIds + "...\n");
-  // console.log("\n\n 🧮 ID count " +uniqueIds.length + "...\n");
-  // console.log("\n\n 🎫 Minting to base new " + toAddress + "...\n");
+  const mint = {}
+
+  for (let i=0; i<rawDataFile.length; i++){
+    const erc1155 = rawDataFile[i].erc1155[0]
+    for (let j=0; j<erc1155.ids.length; j++){
+      const id = erc1155.ids[j]
+      const supply = erc1155.values[j]
+      if (mint[id]) {
+        mint[id] += parseInt(supply);
+      } else {
+        mint[id] = parseInt(supply);
+      }
+    }
+  }
+
+  const idsToMint = Object.keys(mint);
+  const amountsToMint = []
+  for (let k=0; k<idsToMint.length; k++) {
+    amountsToMint.push(mint[idsToMint[k]])
+  }
+
+  // Mint NFTs ------------------------------------------------------------------------------------
+  
   const mfw = await ethers.getContract("MFW", mfwAdmin);
 
-  // ERC1155
+  // ERC1155 mintBaseNew will start at whatever ID the contract counter is on!
   const mintBaseNewErc1155 = async (toArray, amountArray, uriArray) =>
     mfw.mintBaseNew(toArray, amountArray, uriArray);
 
   const idsMinted = [];
-  for (i = 0; i < 5 /*uniqueIds.length*/; i++) {
+  for (i = 0; i < idsToMint.length ; i++) {
     const tx = await mintBaseNewErc1155(
       [toAddress], // To
-      [BigNumber.from("5")], // supply
+      [BigNumber.from(amountsToMint[i])], // supply
       [""], // uri
       {
         gasLimit: 400000,
@@ -62,32 +62,20 @@ const main = async () => {
     }
 
     const receipt = await tx.wait();
-    // emit TransferSingle(operator, address(0), account, id, amount);
-
+    // Event is: TransferSingle(operator, address(0), account, id, amount);
     const eventsMatching = receipt.events.filter(v => v.event === 'TransferSingle');
-    // expect(eventsMatching.length).to.equal(1);
     const transferEvent = eventsMatching[0];
     const idMinted = transferEvent.args[3];
 
     await sleep(delayMS);
-    idsMinted.push(idMinted);
-    console.log(idMinted + ' ID just minted!')
+    idsMinted.push(idMinted.toNumber());
+    console.log(idMinted.toNumber() + ' ID just minted!')
   }
 
-  // Store IDs minted
-  // If custom IDs:
-  // if (network.name !== 'hardhat') {
-  //   fs.writeFileSync(
-  //     `./mfw_minted_${chainId}.json`,
-  //     JSON.stringify(uniqueIds, null, '  ')
-  //   );
-  // }
-
-  // If start at ID == 1:
   if (network.name !== 'hardhat') {
     fs.writeFileSync(
       `./mfw_minted_${chainId}.json`,
-      JSON.stringify(idsMinted, null, '  ') // TODO: convert from BigNumber
+      JSON.stringify(idsMinted, null, '  ') + JSON.stringify(amountsToMint, null, '  ')
     );
   }
 };

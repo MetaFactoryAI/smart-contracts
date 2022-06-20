@@ -11,7 +11,7 @@ const hre = require('hardhat');
  const { calculateMultiClaimHash } = helpers.default;
 
 const claimContract = "MFWGiveaway"; // the name of the directory in data/ as well as the name of the contract
-const claimFile = "TestGiveawayRinkeby"; // TODO: the name of the claim file in data/
+const claimFile = "MFWGiveaway1_mainnet"; // TODO: the name of the claim file in data/
 
  const func = async function () {
    const {deployments, network, getChainId, getNamedAccounts} = hre;
