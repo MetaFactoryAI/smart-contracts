@@ -17,11 +17,11 @@ const main = async () => {
 
   // generate dummy NFTs for an existing ID and base and give to toAddress
 
-  for (i = 1; i < 6; i++) {
+  for (i = 1; i < 26; i++) {
     await mintBaseExistingErc1155(
       [toAddress], // To
       [BigNumber.from(i)], // ID: in order to work this ID must already have been minted!
-      [BigNumber.from("20")], // Desired supply
+      [BigNumber.from("50")], // Desired supply
       [""], // The "base"
       {
         gasLimit: 400000,
