@@ -1,7 +1,6 @@
 const { ethers, getNamedAccounts } = require("hardhat");
 const fs = require("fs");
 const { BigNumber } = ethers;
-const rawDataFile = JSON.parse(fs.readFileSync('./data/MFWGiveaway/DemoGiveawayRinkeby.json')); // TODO: update input file
 
 const delayMS = 1000;
 
@@ -19,16 +18,13 @@ const main = async () => {
 
   const mint = {}
 
-  for (let i=0; i<rawDataFile.length; i++){
-    const erc1155 = rawDataFile[i].erc1155[0]
-    for (let j=0; j<erc1155.ids.length; j++){
-      const id = erc1155.ids[j]
-      const supply = erc1155.values[j]
-      if (mint[id]) {
-        mint[id] += parseInt(supply);
-      } else {
-        mint[id] = parseInt(supply);
-      }
+  for (let i=1; i=100; i++){
+    const id = i
+    const supply = 100
+    if (mint[id]) {
+      mint[id] += parseInt(supply);
+    } else {
+      mint[id] = parseInt(supply);
     }
   }
 

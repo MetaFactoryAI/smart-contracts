@@ -1,4 +1,3 @@
-import { utils } from "ethers";
 import {accounts, node_url} from './network';
 
 import "@nomiclabs/hardhat-waffle";
@@ -14,11 +13,6 @@ export default {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-    },
-    rinkeby: {
-      url: node_url('rinkeby'),
-      accounts: accounts('rinkeby'),
-      tags: ['testnet'],
     },
     mainnet: {
       url: node_url('mainnet'),
@@ -59,24 +53,23 @@ export default {
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
-      rinkeby: 0,
+      goerli: 0,
       mainnet: "0x7019523F9f04C4F4e084c39be1049718d48Ee833"
     },
     mfwAdmin: {
       default: 1, // here this will by default take the second account as mfwAdmin
-      rinkeby: 1,
+      goerli: 1,
       mainnet: "0x7019523F9f04C4F4e084c39be1049718d48Ee833"
     },
     mfwGiveawayAdmin: {
       default: 2, // here this will by default take the second account as mfwGiveawayAdmin
-      rinkeby: 2,
+      goerli: 2,
       mainnet: "0x7019523F9f04C4F4e084c39be1049718d48Ee833"
     },
   },
   etherscan: {
     apiKey: {
       mainnet: process.env.ETHERSCAN_API_KEY_MAINNET || '',
-      rinkeby: process.env.ETHERSCAN_API_KEY_RINKEBY || '',
       goerli: process.env.ETHERSCAN_API_KEY_GOERLI || ''
     },
   },

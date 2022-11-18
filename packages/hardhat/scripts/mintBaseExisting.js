@@ -6,7 +6,7 @@ const delayMS = 1000;
 
 const main = async () => {
   const { deployer } = await getNamedAccounts();
-  const toAddress = "0x8B07fa6767F33f6bC224a1F0d51BA4DE360480Aa"; // Rinkeby giveaway contract
+  const toAddress = "0xd8401646686430711D5d48407D8C0bb79616baef"; // Goerli giveaway contract
 
   console.log("\n\n 🎫 Minting to base existing " + toAddress + "...\n");
   const mfw = await ethers.getContract("MFW", deployer);
